@@ -8,4 +8,16 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Not needed files
+ml_course/*
+nltk_data/*
+offload_folder/*
+data/*
 *.csv
+*.doc*
+*.env
+*.dat
+*.tab
+*.pic*
+*.pickle
