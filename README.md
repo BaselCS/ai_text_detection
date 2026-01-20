@@ -15,6 +15,7 @@ Files map :
 - `data_engineer_with_BERT.ipynb` : contains the code for adding BERT embeddings to the base features.
 - `data` folder : contains all the datasets used in the experiments.
 - `Evaluation` folder : contains the code for evaluating models under different scenarios like misspelling attack, cross-domain, unseen models, paraphrasing and translation.
+- `Evaluation/evaluation_utils.ipynb` : contains the utility functions for evaluation Accuracy, Precision, Recall and F1-Score for both binary and classification tasks under different scenarios like misspelling attack, cross-domain, unseen models, paraphrasing and translation.
 - `models` folder : contains the saved models for both binary and classification tasks.
 
 **Key Info:**
