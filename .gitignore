@@ -11,9 +11,9 @@ wheels/
 
 # Not needed files
 ml_course/*
-nltk_data/*
+nltk_old_data/*
 offload_folder/*
-data/*
+old_data/*
 *.csv
 *.doc*
 *.env
@@ -21,3 +21,8 @@ data/*
 *.tab
 *.pic*
 *.pickle
+*.zip
+.agai*
+*.zip
+working_structure.md
+
