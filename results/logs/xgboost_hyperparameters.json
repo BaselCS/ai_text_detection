@@ -1,0 +1,11 @@
+{
+    "objective": "binary:logistic",
+    "tree_method": "hist",
+    "device": "cuda",
+    "n_estimators": 2000,
+    "early_stopping_rounds": 100,
+    "learning_rate": 0.01,
+    "max_depth": 10,
+    "random_state": 999,
+    "n_jobs": 4
+}

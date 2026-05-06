@@ -1,0 +1,27 @@
+{
+    "seed": 999,
+    "data_split": "80/20",
+    "task_type": "binary",
+    "feature_list": [
+        "ppl",
+        "burstiness",
+        "ttr",
+        "complex",
+        "avg_word_len",
+        "avg_sent_len",
+        "uid",
+        "gain",
+        "beauty",
+        "government",
+        "urban",
+        "art",
+        "help",
+        "optimism",
+        "strength",
+        "love",
+        "traveling",
+        "syntax_depth",
+        "semantic_mean",
+        "semantic_std"
+    ]
+}
