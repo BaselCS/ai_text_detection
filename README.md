@@ -15,28 +15,23 @@ Our methodology evaluates the effectiveness of two primary feature configuration
   - `figures/`: Generated visual plots (e.g., PCA dimensionality reduction).
 - `Main.ipynb`: The main Jupyter Notebook where the core models are trained, evaluated, and where the primary results/figures are generated.
 - `external_models.ipynb`: Additional notebook for external model validation.
-- `five_seeds_with_SD`: A standalone Python script designed to run the multi-class statistical significance evaluation across 5 random seeds to ensure highly robust results.
+- `case_studies.py`: A Python file that shows the model's performance on paraphrased text.
+
 
 ## How to Use
-
-### 1. Setup Your Environment
-Ensure you have Python installed and your environment activated. The project relies on standard data science libraries (Pandas, NumPy, Scikit-Learn, XGBoost, etc.).
 ```bash
-# Example activation of your virtual environment
-source .venv/bin/activate
+git clone https://github.com/BaselCS/ai_text_detection
+
+# To set up the environment
+uv init 
 ```
 
-### 2. Main Training Pipeline (Jupyter Notebook)
-To run the primary training pipeline and generate the core figures/tables:
+## Reproducing Results
+
+To run the primary training pipeline and reproduce the core figures/tables:
 1. Open `Main.ipynb` in your preferred Jupyter environment (VS Code, JupyterLab, etc.).
 2. Run the cells sequentially. The notebook will automatically train the XGBoost models (both Binary and Multi-class), evaluate them on the test partitions, and output the results directly to the `results/` folder.
 
-### 3. Running the Statistical Significance Test
-To evaluate the variance of the multi-class model and generate the Per-Class Mean ± SD F1 Table (Table 11), you can execute the standalone 5-seed script directly from your terminal:
-
-```bash
-python five_seeds_with_SD
-```
 
 ## Notes on Methodology
 - **Reproducibility:** A fixed global seed (`SEED = 999`) is strictly used for train/test splits to mathematically guarantee the identical partitions across all experiments. 
