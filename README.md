@@ -22,10 +22,9 @@ Our methodology evaluates the effectiveness of two primary feature configuration
 ```bash
 git clone https://github.com/BaselCS/ai_text_detection
 
+# To set up the environment
 uv init 
 ```
-### 1. Setup Your Environment
-Ensure you have Python installed and your environment activated. The project relies on standard data science libraries (Pandas, NumPy, Scikit-Learn, XGBoost, etc.).
 
 ## Reproducing Results
 
