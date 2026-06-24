@@ -27,3 +27,6 @@ old_data/*
 working_structure.md
 old_things/*
 results/models/*
+models/
+nltk_data/
+offload_folder/
