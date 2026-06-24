@@ -26,4 +26,4 @@ old_data/*
 *.zip
 working_structure.md
 old_things/
-results/models/*seed*
+results/models/
