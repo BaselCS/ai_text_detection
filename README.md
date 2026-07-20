@@ -23,7 +23,7 @@ Our methodology evaluates the effectiveness of two primary feature configuration
 git clone https://github.com/BaselCS/ai_text_detection
 
 # To set up the environment
-uv init 
+uv sync
 ```
 
 ## Reproducing Results
