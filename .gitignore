@@ -30,3 +30,5 @@ results/models/*
 models/
 nltk_data/
 offload_folder/
+.agents/*
+agents/
