@@ -1,6 +1,6 @@
 """
 train_roberta_baseline.py
-Task 3: Fine-Tune RoBERTa-base for Binary and Multi-Class AI text detection.
+Task3: Fine-Tune RoBERTa-base for Binary and Multi-Class AI text detection.
 
 Long-text Strategy (same as data_engineer.ipynb):
   - MAX_LENGTH  = 512 tokens (RoBERTa hard limit)

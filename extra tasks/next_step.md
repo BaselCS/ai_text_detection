@@ -40,8 +40,8 @@ Determine if the **"Fingerprint-Overwrite Effect"** discovered with Gemma-27B is
      - Multi-Class Attribution misclassification distribution (check if GPT-4o-mini or LLaMA-3 paraphrasing forces predictions into GPT-4o or LLaMA classes).
 
 5. **Step 1.5: Generate Comparative Findings & Plots**
-   - Update Table `T7` to `T7_Expanded_Paraphrasers.csv`.
-   - Generate confusion matrices `F12_Paraphrased_GPT.png` and `F12_Paraphrased_LLaMA.png`.
+   - Add Table `T7.1` to `results/tables/T7.1_Expanded_Paraphrasers.csv`.
+   - Generate confusion matrices `results/figures/F12.1_Paraphrased_GPT.png` and `results/figures/F12.1_Paraphrased_LLaMA.png`.
 
 ---
 
@@ -63,7 +63,7 @@ Validate pre-trained Phase 1 XGBoost models on a completely independent human ne
      - `Qwen-2-72B`
      - `LLaMA-3-8B`
      - `Mistral-7B`
-     - `Yi-Large`
+     - `Yi-Large` replaced with `deepseek_pro` 
      - `GPT4All` / `Claude`
    - Combine human + 7 AI classes into `data/raw_second_corpus.csv`.
 
@@ -82,7 +82,7 @@ Validate pre-trained Phase 1 XGBoost models on a completely independent human ne
 
 ---
 
-## Task 3: Fine-Tuned Neural Baseline (RoBERTa)
+## Task3: Fine-Tuned Neural Baseline (RoBERTa)
 
 ### Objective
 Build a direct deep learning baseline by fine-tuning `roberta-base` end-to-end on text splits, comparing its performance against XGBoost + Extracted Hybrid Features.
@@ -122,4 +122,4 @@ Build a direct deep learning baseline by fine-tuning `roberta-base` end-to-end o
 | :--- | :--- | :--- | :--- |
 | **Task 1** | `uv run python helper/paraphrase_multi_models.py` | `processed_paraphrased_gpt4o_mini.csv`, `T7_Expanded.csv` | `[ ] Pending` |
 | **Task 2** | `uv run python scripts/process_second_corpus.py` | `processed_second_corpus_bbc.csv`, `T14_Second_Corpus.csv` | `[ ] Pending` |
-| **Task 3** | `uv run python train_roberta_baseline.py` | `RoBERTa_Binary/`, `T15_Neural_vs_Hybrid.csv` | `[ ] Pending` |
+| **Task3** | `uv run python train_roberta_baseline.py` | `RoBERTa_Binary/`, `T15_Neural_vs_Hybrid.csv` | `[ ] Pending` |

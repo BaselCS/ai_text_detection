@@ -10,7 +10,7 @@
 ## 1. Training Configuration
 
 | Parameter | Value |
-|-----------|-------|       
+|-----------|-------|
 | Base Model | `roberta-base` (HuggingFace) |
 | Optimizer | AdamW |
 | Learning Rate | 2e-5 |

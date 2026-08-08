@@ -1,5 +1,5 @@
 """
-Task 3 Report Generator
+Task3 Report Generator
 Produces all CSV files and figures for results/extra/task3/
 Following F1.png color style (White background, Blues palette, crisp dark typography)
 Run: uv run python results/extra/task3/generate_task3_report.py
