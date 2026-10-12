@@ -182,9 +182,9 @@ def main():
             label2id = json.load(f)["label2id"]
 
         multi_datasets = {
-            "Clean_Test_Multi":       os.path.join(multi_dir, "test_split.csv"),
-            "Paraphrased_Gemma_Multi":"data/processed/processed_paraphrased_articles.csv",
-            "Translation_NLLB_Multi": "data/processed/processed_translation.csv",
+            "Clean_Test":        os.path.join(multi_dir, "test_split.csv"),
+            "Paraphrased_Gemma": "data/processed/processed_paraphrased_articles.csv",
+            "Translation_NLLB":  "data/processed/processed_translation.csv",
         }
 
         for name, path in multi_datasets.items():
