@@ -120,14 +120,42 @@ def evaluate_dataset(model, tokenizer, df, device,
 #  Main                                                               #
 # ------------------------------------------------------------------ #
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Evaluate RoBERTa Baseline Models")
+    parser.add_argument("--seed", type=int, default=None, help="Evaluate specific seed model (e.g. 42, 123)")
+    parser.add_argument("--binary_dir", type=str, default=None, help="Path to binary model directory")
+    parser.add_argument("--multi_dir", type=str, default=None, help="Path to multi-class model directory")
+    parser.add_argument("--out_csv", type=str, default="results/tables/T15_Neural_vs_Hybrid_XGBoost.csv")
+    args = parser.parse_args()
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"--> Evaluation device: {device}")
+
+    # Determine binary directory with fallback to seed folders
+    if args.binary_dir:
+        binary_dir = args.binary_dir
+    elif args.seed is not None:
+        binary_dir = f"results/models/RoBERTa_Binary_s{args.seed}"
+    else:
+        binary_dir = "results/models/RoBERTa_Binary"
+        if not os.path.isdir(binary_dir) and os.path.isdir("results/models/RoBERTa_Binary_s42"):
+            binary_dir = "results/models/RoBERTa_Binary_s42"
+
+    # Determine multi directory with fallback to seed folders
+    if args.multi_dir:
+        multi_dir = args.multi_dir
+    elif args.seed is not None:
+        multi_dir = f"results/models/RoBERTa_Multi_s{args.seed}"
+    else:
+        multi_dir = "results/models/RoBERTa_Multi"
+        if not os.path.isdir(multi_dir) and os.path.isdir("results/models/RoBERTa_Multi_s42"):
+            multi_dir = "results/models/RoBERTa_Multi_s42"
 
     results = []
 
     # ── Binary evaluation datasets ──────────────────────────────────
     binary_datasets = {
-        "Clean_Test":        "results/models/RoBERTa_Binary/test_split.csv",
+        "Clean_Test":        os.path.join(binary_dir, "test_split.csv"),
         "Misspell_5%":       "data/processed/processed_misspelled_5.csv",
         "Misspell_10%":      "data/processed/processed_misspelled_10.csv",
         "Misspell_15%":      "data/processed/processed_misspelled_15.csv",
@@ -139,10 +167,9 @@ def main():
         "Translation_NLLB":  "data/processed/processed_translation.csv",
     }
 
-    binary_dir = "results/models/RoBERTa_Binary"
     if os.path.isdir(binary_dir):
         print("\n==========================================")
-        print(" Evaluating BINARY RoBERTa")
+        print(f" Evaluating BINARY RoBERTa from: {binary_dir}")
         print("==========================================")
         tok_bin   = AutoTokenizer.from_pretrained(binary_dir)
         model_bin = AutoModelForSequenceClassification.from_pretrained(binary_dir).to(device)
@@ -170,10 +197,9 @@ def main():
         print(f"[WARN] Binary model dir not found: {binary_dir}")
 
     # ── Multi-class evaluation datasets ────────────────────────────
-    multi_dir = "results/models/RoBERTa_Multi"
     if os.path.isdir(multi_dir):
         print("\n==============================================")
-        print(" Evaluating MULTI-CLASS RoBERTa")
+        print(f" Evaluating MULTI-CLASS RoBERTa from: {multi_dir}")
         print("==============================================")
         tok_multi   = AutoTokenizer.from_pretrained(multi_dir)
         model_multi = AutoModelForSequenceClassification.from_pretrained(multi_dir).to(device)
@@ -183,6 +209,8 @@ def main():
 
         multi_datasets = {
             "Clean_Test":        os.path.join(multi_dir, "test_split.csv"),
+            "Misspell_5%":       "data/processed/processed_misspelled_5.csv",
+            "Misspell_20%":      "data/processed/processed_misspelled_20.csv",
             "Paraphrased_Gemma": "data/processed/processed_paraphrased_articles.csv",
             "Translation_NLLB":  "data/processed/processed_translation.csv",
         }
@@ -216,8 +244,8 @@ def main():
     if results:
         cols    = ["Model", "Dataset", "count", "accuracy", "macro_f1", "weighted_f1", "latency_ms_per_sample"]
         res_df  = pd.DataFrame(results)[cols]
-        out_csv = "results/tables/T15_Neural_vs_Hybrid_XGBoost.csv"
-        os.makedirs("results/tables", exist_ok=True)
+        out_csv = args.out_csv
+        os.makedirs(os.path.dirname(out_csv), exist_ok=True)
         res_df.to_csv(out_csv, index=False)
         print(f"\nSUCCESS: Results saved → {out_csv}")
         print("\n" + res_df.to_string(index=False))

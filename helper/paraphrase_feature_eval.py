@@ -115,7 +115,7 @@ if DEVICE == "cuda":
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 2. FEATURE EXTRACTION HELPERS  (mirrors data_engineer.ipynb exactly)
+# 2. FEATURE EXTRACTION HELPERS  (mirrors notebooks/data_engineer.ipynb exactly)
 # ─────────────────────────────────────────────────────────────────────────────
 
 def is_valid_text(text) -> bool:
@@ -556,7 +556,7 @@ def run_feature_pipeline(input_csv: str, output_csv: str, paraphraser_name: str)
 # ─────────────────────────────────────────────────────────────────────────────
 
 def _train_xgboost(X, y, task_type):
-    """Train XGBoost with same hyperparams as Phase 1 Main.ipynb."""
+    """Train XGBoost with same hyperparams as Phase 1 notebooks/Main.ipynb."""
     if task_type == "binary":
         human_idx = y[y == 0].index
         ai_idx    = y[y == 1].index

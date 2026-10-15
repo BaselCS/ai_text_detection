@@ -199,7 +199,7 @@ async def main():
         print("ERROR: OPENROUTER_API_KEY not found in .env file.")
         return
 
-    input_file = "extra tasks/task2/cnn_dailymail_1k.csv"
+    input_file = "tools/second_corpus/cnn_dailymail_1k.csv"
     sample_file = "results/extra/task2/generated_sample50.csv"
 
     if SAMPLE_TEST:

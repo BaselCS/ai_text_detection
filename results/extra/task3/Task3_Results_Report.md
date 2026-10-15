@@ -38,7 +38,7 @@ Splits use stratified sampling (same seed as Phase-1 XGBoost pipeline).
 
 ### Long-Text Handling Strategy
 
-Identical to `data_engineer.ipynb` BERT embedding pipeline:
+Identical to `notebooks/data_engineer.ipynb` BERT embedding pipeline:
 
 | Setting | Value |
 |---------|-------|
@@ -176,10 +176,10 @@ Identical to `data_engineer.ipynb` BERT embedding pipeline:
 
 ```bash
 # Train both models
-uv run python train_roberta_baseline.py --epochs 3 --batch_size 8 --max_length 512
+uv run python src/roberta/train_roberta_baseline.py --epochs 3 --batch_size 8 --max_length 512
 
 # Run evaluation on all attack suites
-uv run python evaluate_roberta_baseline.py
+uv run python src/roberta/evaluate_roberta_baseline.py
 
 # Regenerate all figures and CSVs
 uv run python results/extra/task3/generate_task3_report.py

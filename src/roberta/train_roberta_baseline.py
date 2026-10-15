@@ -170,10 +170,36 @@ def prepare_data(data_path: str, task: str = "binary"):
 #  Main training function                                             #
 # ------------------------------------------------------------------ #
 def train_model(task: str = "binary", epochs: int = 3,
-                batch_size: int = 8, max_length: int = MAX_LENGTH):
+                batch_size: int = 8, max_length: int = MAX_LENGTH,
+                seed: int = None, output_dir: str = None,
+                overwrite: bool = False):
+
+    global SEED
+    if seed is not None:
+        SEED = seed
+        set_seed(SEED)
 
     data_path  = "data/processed/processed_articles.csv"
-    output_dir = f"results/models/RoBERTa_{task.capitalize()}"
+    if output_dir is None:
+        output_dir = f"results/models/RoBERTa_{task.capitalize()}_s{SEED}"
+
+    # Safety check: avoid deleting or overwriting complete trained models
+    has_model = (
+        os.path.exists(os.path.join(output_dir, "model.safetensors")) or
+        os.path.exists(os.path.join(output_dir, "pytorch_model.bin"))
+    )
+    if has_model:
+        if not overwrite:
+            print(f"[SKIP] Complete model already exists at {output_dir}. Skipping training to preserve model.")
+            return output_dir
+        else:
+            import time
+            import shutil
+            ts = time.strftime("%Y%m%d_%H%M%S")
+            backup_dir = f"{output_dir}_backup_{ts}"
+            print(f"[BACKUP] Existing model at {output_dir} backed up to {backup_dir}")
+            shutil.copytree(output_dir, backup_dir)
+
     os.makedirs(output_dir, exist_ok=True)
     os.makedirs("results/tables", exist_ok=True)
 
@@ -228,7 +254,7 @@ def train_model(task: str = "binary", epochs: int = 3,
         compute_metrics=compute_metrics,
     )
 
-    print(f"\n==> Training {task.upper()} RoBERTa  "
+    print(f"\n==> Training {task.upper()} RoBERTa (Seed: {SEED})  "
           f"(batch={batch_size}, grad_accum=2, effective_batch=16, "
           f"epochs={epochs}, max_len={max_length})")
     trainer.train()
@@ -238,6 +264,22 @@ def train_model(task: str = "binary", epochs: int = 3,
     trainer.save_model(output_dir)
     tokenizer.save_pretrained(output_dir)
     print(f"SUCCESS: Best {task.capitalize()} RoBERTa saved at → {output_dir}\n")
+
+    # If seed is 42, also sync to legacy unseeded directory for backward compatibility
+    legacy_dir = f"results/models/RoBERTa_{task.capitalize()}"
+    if os.path.abspath(output_dir) != os.path.abspath(legacy_dir) and SEED == 42:
+        os.makedirs(legacy_dir, exist_ok=True)
+        import shutil
+        for fname in os.listdir(output_dir):
+            if fname == "checkpoints":
+                continue
+            src_f = os.path.join(output_dir, fname)
+            dst_f = os.path.join(legacy_dir, fname)
+            if os.path.isfile(src_f):
+                shutil.copy2(src_f, dst_f)
+        print(f"--> Synced Seed 42 to legacy folder → {legacy_dir}")
+
+    return output_dir
 
 
 # ------------------------------------------------------------------ #
@@ -250,9 +292,14 @@ if __name__ == "__main__":
     parser.add_argument("--epochs",     type=int, default=3)
     parser.add_argument("--batch_size", type=int, default=8)
     parser.add_argument("--max_length", type=int, default=MAX_LENGTH)
+    parser.add_argument("--seed",       type=int, default=SEED, help="Random seed (default: 42)")
+    parser.add_argument("--output_dir", type=str, default=None, help="Custom output directory")
+    parser.add_argument("--overwrite",  action="store_true", help="Overwrite existing model if present")
     args = parser.parse_args()
 
     if args.task in ["binary", "all"]:
-        train_model("binary", args.epochs, args.batch_size, args.max_length)
+        train_model("binary", args.epochs, args.batch_size, args.max_length,
+                    seed=args.seed, output_dir=args.output_dir, overwrite=args.overwrite)
     if args.task in ["multi", "all"]:
-        train_model("multi",  args.epochs, args.batch_size, args.max_length)
+        train_model("multi",  args.epochs, args.batch_size, args.max_length,
+                    seed=args.seed, output_dir=args.output_dir, overwrite=args.overwrite)

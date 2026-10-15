@@ -1,6 +1,6 @@
 # Second Phase of Experiments — Action Plan & Technical Analysis
 
-This document provides a detailed technical breakdown, current status, and execution plan for all items in [Second phase of experiments.md](file:///home/basel/Work/python/ai_text_detection/Second%20phase%20of%20experiments.md).
+This document provides a detailed technical breakdown, current status, and execution plan for all items in [Second phase of experiments.md](../Second%20phase%20of%20experiments.md).
 
 ---
 
@@ -22,26 +22,26 @@ The supervising professor has outlined specific requirements to elevate the pape
   - `Mistral-7B` $\rightarrow$ `Mistral-7B`
   - `LLaMA-3` $\rightarrow$ `Llama-8B`
   - `GPT-4o-mini` $\rightarrow$ `GPT-4o`
-- **Data Status:** All 6 paraphraser datasets are already extracted and processed in [data/processed/](file:///home/basel/Work/python/ai_text_detection/data/processed):
-  - [processed_paraphrased_articles.csv](file:///home/basel/Work/python/ai_text_detection/data/processed/processed_paraphrased_articles.csv) (Gemma-27B)
-  - [processed_paraphrased_gemma2.csv](file:///home/basel/Work/python/ai_text_detection/data/processed/processed_paraphrased_gemma2.csv)
-  - [processed_paraphrased_gpt4o_mini.csv](file:///home/basel/Work/python/ai_text_detection/data/processed/processed_paraphrased_gpt4o_mini.csv)
-  - [processed_paraphrased_llama3.csv](file:///home/basel/Work/python/ai_text_detection/data/processed/processed_paraphrased_llama3.csv)
-  - [processed_paraphrased_mistral7b.csv](file:///home/basel/Work/python/ai_text_detection/data/processed/processed_paraphrased_mistral7b.csv)
-  - [processed_paraphrased_qwen2.csv](file:///home/basel/Work/python/ai_text_detection/data/processed/processed_paraphrased_qwen2.csv)
-- **Execution Plan:** Run an inference script using saved XGBoost model [Multi_BERT.joblib](file:///home/basel/Work/python/ai_text_detection/results/models/Multi_BERT.joblib), apply the alternative ground truth mapping, and generate a new summary table comparing original vs. alternative ground truth.
+- **Data Status:** All 6 paraphraser datasets are already extracted and processed in [data/processed/](../data/processed):
+  - [processed_paraphrased_articles.csv](../data/processed/processed_paraphrased_articles.csv) (Gemma-27B)
+  - [processed_paraphrased_gemma2.csv](../data/processed/processed_paraphrased_gemma2.csv)
+  - [processed_paraphrased_gpt4o_mini.csv](../data/processed/processed_paraphrased_gpt4o_mini.csv)
+  - [processed_paraphrased_llama3.csv](../data/processed/processed_paraphrased_llama3.csv)
+  - [processed_paraphrased_mistral7b.csv](../data/processed/processed_paraphrased_mistral7b.csv)
+  - [processed_paraphrased_qwen2.csv](../data/processed/processed_paraphrased_qwen2.csv)
+- **Execution Plan:** Run an inference script using saved XGBoost model [Multi_BERT.joblib](../results/models/Multi_BERT.joblib), apply the alternative ground truth mapping, and generate a new summary table comparing original vs. alternative ground truth.
 
 ### Item 2: BBC Dataset Provenance
 - **Objective:** Detail origins, models, prompts, and sampling settings for the 6 AI versions in the BBC test corpus.
-- **Data Status:** The multi-generator outputs reside in [results/extra/task2/generated_full1000.csv](file:///home/basel/Work/python/ai_text_detection/results/extra/task2/generated_full1000.csv).
+- **Data Status:** The multi-generator outputs reside in [results/extra/task2/generated_full1000.csv](../results/extra/task2/generated_full1000.csv).
 - **Details:**
-  - Evaluated in [helper/cross_corpus_feature_eval.py](file:///home/basel/Work/python/ai_text_detection/helper/cross_corpus_feature_eval.py).
+  - Evaluated in [helper/cross_corpus_feature_eval.py](../helper/cross_corpus_feature_eval.py).
   - Models: `claude_haiku`, `gemma_2_9b`, `qwen_2_72b`, `llama_3_8b`, `mistral_7b`, `gpt-4o-mini`, `deepseek_pro`.
   - Prompts and generation scripts document exact prompt templates used to convert human news summaries into full synthetic articles.
 
 ### Item 3: RoBERTa Gemma Paraphrase Confusion Matrix
 - **Objective:** Extract and provide the multi-class confusion matrix for fine-tuned RoBERTa under the Gemma-27B paraphrasing attack.
-- **Data Status:** Already completed in Task 3. Documented in [results/extra/task3/Task3_Results_Report.md](file:///home/basel/Work/python/ai_text_detection/results/extra/task3/Task3_Results_Report.md) and plotted in [results/extra/task3/F7_fingerprint_overwrite.png](file:///home/basel/Work/python/ai_text_detection/results/extra/task3/F7_fingerprint_overwrite.png).
+- **Data Status:** Already completed in Task 3. Documented in [results/extra/task3/Task3_Results_Report.md](../results/extra/task3/Task3_Results_Report.md) and plotted in [results/extra/task3/F7_fingerprint_overwrite.png](../results/extra/task3/F7_fingerprint_overwrite.png).
 - **Execution Plan:** Export the exact numerical confusion matrix into a clean CSV and formatted figure for paper submission.
 
 ---
@@ -56,7 +56,7 @@ The supervising professor has outlined specific requirements to elevate the pape
 - **Objective:** Compute marginal distributions (column totals of confusion matrix) for hybrid model predictions under:
   - Misspelling attacks at 5% and 20% noise.
   - Round-trip translation (NLLB-200).
-- **Data Status:** Metrics and confusion matrices exist in [results/tables/T4.csv](file:///home/basel/Work/python/ai_text_detection/results/tables/T4.csv), [results/tables/T7.csv](file:///home/basel/Work/python/ai_text_detection/results/tables/T7.csv), and figures `F7`, `F8`, `F12`.
+- **Data Status:** Metrics and confusion matrices exist in [results/tables/T4.csv](../results/tables/T4.csv), [results/tables/T7.csv](../results/tables/T7.csv), and figures `F7`, `F8`, `F12`.
 - **Execution Plan:** Sum predictions across predicted classes to illustrate which classes absorb false positives under perturbation.
 
 ### Item 6: Retrain Hybrid Model without Gemma (6-Class Ablation)
@@ -68,8 +68,8 @@ The supervising professor has outlined specific requirements to elevate the pape
 
 ### Item 7: RoBERTa 5-Seed Reproducibility Protocol
 - **Objective:** Train and evaluate `roberta-base` for binary detection and multi-class attribution across five fixed seeds (`42`, `123`, `999`, `2024`, `8080`).
-- **Data Status:** Seed `42` is finished ([train_roberta_baseline.py](file:///home/basel/Work/python/ai_text_detection/train_roberta_baseline.py) & [evaluate_roberta_baseline.py](file:///home/basel/Work/python/ai_text_detection/evaluate_roberta_baseline.py)).
-- **Execution Plan:** Automate the seed loop, save checkpoints, and report mean $\pm$ standard deviation matching the XGBoost protocol in [results/tables/T9_Statistical_Significance_Detailed.csv](file:///home/basel/Work/python/ai_text_detection/results/tables/T9_Statistical_Significance_Detailed.csv).
+- **Data Status:** Seed `42` is finished ([src/roberta/train_roberta_baseline.py](../src/roberta/train_roberta_baseline.py) & [src/roberta/evaluate_roberta_baseline.py](../src/roberta/evaluate_roberta_baseline.py)).
+- **Execution Plan:** Automate the seed loop, save checkpoints, and report mean $\pm$ standard deviation matching the XGBoost protocol in [results/tables/T9_Statistical_Significance_Detailed.csv](../results/tables/T9_Statistical_Significance_Detailed.csv).
 
 ---
 
@@ -91,7 +91,7 @@ The supervising professor has outlined specific requirements to elevate the pape
 ## 5. Answers to Clarifying Questions
 
 ### Question A: "Is the cross-domain WP set Writing Prompts or Wikipedia?"
-- **Answer:** **Writing Prompts**. Specifically Reddit `r/WritingPrompts` from the MGT Benchmark dataset (referenced in [Main.ipynb:L502](file:///home/basel/Work/python/ai_text_detection/Main.ipynb#L502) and [agents/Agent Handoff Document.md:L59](file:///home/basel/Work/python/ai_text_detection/agents/Agent%20Handoff%20Document.md#L59)).
+- **Answer:** **Writing Prompts**. Specifically Reddit `r/WritingPrompts` from the MGT Benchmark dataset (referenced in [notebooks/Main.ipynb:L502](../notebooks/Main.ipynb#L502) and [agents/Agent Handoff Document.md:L59](../agents/Agent%20Handoff%20Document.md#L59)).
 
 ### Question B: "Why do the Essay and WP counts show 396 and 398 rather than 400?"
-- **Answer:** In [data_engineer.ipynb:L697](file:///home/basel/Work/python/ai_text_detection/data_engineer.ipynb#L697), preprocessing step 10 executes `train_df.dropna(inplace=True)`. Four samples in Essay and two samples in WP contained empty strings, NaNs, or failed tokenization during extraction and were dropped.
+- **Answer:** In [notebooks/data_engineer.ipynb:L697](../notebooks/data_engineer.ipynb#L697), preprocessing step 10 executes `train_df.dropna(inplace=True)`. Four samples in Essay and two samples in WP contained empty strings, NaNs, or failed tokenization during extraction and were dropped.

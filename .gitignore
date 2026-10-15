@@ -9,6 +9,13 @@ wheels/
 # Virtual environments
 .venv
 
+# Done / frozen work — local only, never committed
+archive/
+
+# Run artifacts
+*.joblib
+*.log
+
 # Not needed files
 ml_course/*
 nltk_old_data/*
