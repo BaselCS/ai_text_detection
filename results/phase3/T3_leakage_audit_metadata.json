@@ -1,0 +1,19 @@
+{
+  "mapping_rule": "first occurrence in processed_articles.csv (frozen audit rule)",
+  "audited_file": "data/processed/processed_translation.csv",
+  "audited_rows": 1729,
+  "unmatched_rows": 0,
+  "writer_mismatches": 1,
+  "label_mismatches": 0,
+  "seed42": {
+    "Seed": 42.0,
+    "Total_Translated": 1729.0,
+    "In_Train_Count": 1205.0,
+    "In_Train_Pct": 69.69,
+    "In_Val_Count": 152.0,
+    "In_Val_Pct": 8.79,
+    "In_Test_Count": 372.0,
+    "In_Test_Pct": 21.52,
+    "Leakage_Into_Training_Pct": 78.48
+  }
+}

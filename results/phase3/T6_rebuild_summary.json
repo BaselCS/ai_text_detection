@@ -1,0 +1,59 @@
+{
+  "join_stats": {
+    "Gemma-2-9B": {
+      "raw_rows": 2100,
+      "processed_rows": 2098,
+      "joined_rows": 2098,
+      "unmatched": 0
+    },
+    "Qwen-2-72B": {
+      "raw_rows": 2100,
+      "processed_rows": 2099,
+      "joined_rows": 2099,
+      "unmatched": 0
+    },
+    "LLaMA-3": {
+      "raw_rows": 2100,
+      "processed_rows": 2100,
+      "joined_rows": 2100,
+      "unmatched": 0
+    },
+    "Mistral-7B": {
+      "raw_rows": 2100,
+      "processed_rows": 2100,
+      "joined_rows": 2100,
+      "unmatched": 0
+    },
+    "GPT-4o-mini": {
+      "raw_rows": 2100,
+      "processed_rows": 2100,
+      "joined_rows": 2100,
+      "unmatched": 0
+    },
+    "Gemma-27B": {
+      "raw_rows": 2094,
+      "processed_rows": 2072,
+      "joined_rows": 2072,
+      "unmatched": 0
+    }
+  },
+  "n_rows": 12569,
+  "n_valid_rows": 12569,
+  "n_missing_original_text": 0,
+  "n_clusters": 2096,
+  "bertscore_mean": 0.9081416177061067,
+  "bertscore_std": 0.04871855205989335,
+  "gemma27b_bertscore_mean": 0.8369941292294665,
+  "gemma27b_bertscore_std": 0.031095386268515046,
+  "expected_rows": 12600,
+  "missing_rows": 31,
+  "missing_by_paraphraser": {
+    "Gemma-2-9B": 2,
+    "Qwen-2-72B": 1,
+    "LLaMA-3": 0,
+    "Mistral-7B": 0,
+    "GPT-4o-mini": 0,
+    "Gemma-27B": 28
+  },
+  "cluster_count_note": "2,100 prompt slots minus 3 recovered prompt references that duplicate existing articles minus 1 exact duplicate original text."
+}

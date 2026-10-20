@@ -5,8 +5,8 @@
 - **Multi-class attribution:** Human + 7 AI generators (GPT-4o, Gemma-2-9B, Qwen-2-72B, Llama-8B, Mistral-7B, Yi-Large, GPT4All/Claude family). Human baseline: NYT news corpus.
 
 ## Method
-- **Features Only:** 19 stylometric/statistical/syntactic/psycholinguistic features (perplexity via GPT-2, burstiness, TTR, UID, syntax depth via spaCy, Empath categories, semantic consistency).
-- **Features + BERT (hybrid):** 19 features + 768-d `bert-base-uncased` CLS embeddings (sliding window 512/overlap 50) = 791-d. XGBoost (`hist`, early stopping).
+- **Features Only:** 20 stylometric/statistical/syntactic/psycholinguistic features (perplexity via GPT-2, burstiness, TTR, UID, syntax depth via spaCy, Empath categories, semantic consistency).
+- **Features + BERT (hybrid):** 20 features + 768-d `bert-base-uncased` CLS embeddings (sliding window 512/overlap 50) = 788-d feature vector (791 columns including `Writer`, `Text`, and `is_AI`). XGBoost (`hist`, early stopping).
 - **Baseline:** fine-tuned `roberta-base` end-to-end (see `docs/07_task3_roberta_report.md`).
 
 ## Reproducibility
