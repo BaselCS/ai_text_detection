@@ -1,0 +1,5 @@
+Model,Dependent_Variable,N_Observations,N_Clusters,Converged,Pseudo_R2,BERTScore_Beta,Clustered_SE,z_statistic,p_value,Odds_Ratio_per_0.1,Beta_CI_Lower,Beta_CI_Upper,OR_CI_Lower,OR_CI_Upper,Regime,Specification,Reported,Note
+AI-only | Extended-Pool,binary_correct,10754,3203,False,0.1785,23.0645,4.1023,5.62,1.8844313025814716e-08,10.04,15.0241,31.105,4.49,22.43,Extended-Pool Sensitivity,AI-only,False,Quasi-separated; point estimate not reported
+Human-only | Extended-Pool,binary_correct,1795,579,True,0.225,11.3245,1.7892,6.33,2.4620241545454473e-10,3.1,7.8177,14.8313,2.19,4.41,Extended-Pool Sensitivity,Human-only,True,
+AI-only | Restricted,binary_correct,8983,1797,False,0.2144,27.7568,6.088,4.56,5.1332956476810895e-06,16.05,15.8246,39.6891,4.87,52.93,Restricted,AI-only,False,Quasi-separated; point estimate not reported
+Human-only | Restricted,binary_correct,1499,299,True,0.2426,12.4944,1.994,6.27,3.7036103769671675e-10,3.49,8.5863,16.4026,2.36,5.16,Restricted,Human-only,True,

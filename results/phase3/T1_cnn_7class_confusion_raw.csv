@@ -1,0 +1,8 @@
+True,GPT-4o,Gemma-2-9B,Human,Llama-8B,Mistral-7B,Qwen-2-72B,deepseek-v4-pro
+GPT-4o,2,805,1,6,108,4,74
+Gemma-2-9B,22,811,162,0,0,1,4
+Human,0,87,702,62,4,108,37
+Llama-8B,1,178,7,242,154,374,44
+Mistral-7B,3,727,20,108,53,80,9
+Qwen-2-72B,11,424,3,170,222,44,126
+deepseek-v4-pro,1,538,443,4,0,8,5

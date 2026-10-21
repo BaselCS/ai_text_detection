@@ -24,37 +24,39 @@
   - The binary detection result ($0.8466$) is unaffected and kept.
 - **Action Required**:
   - Regenerate the CNN AI side using the **exact same checkpoints** as the training corpus and the **exact same rewrite prompt**.
-  - `Yi-Large` is retired/unavailable: **drop that class**.
+  - The `Yi-Large` CNN slot is populated by `deepseek-v4-pro`, not Yi-Large: **drop that class in the 6-class evaluation and label the slot `deepseek-v4-pro` in the 7-class evaluation**.
   - Report if any other model checkpoint cannot be matched.
-  - *Contingency*: If too few matched classes remain, report the set as an **unseen-generator test** instead.
+  - *Contingency*: If too few matched classes remain, report the set as an **unseen corpus + prompt + generator test** instead.
 - **Resolution & Status (DONE)**:
   > **Task 1 Status & Methodology Update: Second Corpus Attribution**
   > Following the audit of the original training checkpoints on hosted API endpoints per the supervisor's instructions:
   > 
-  > 1. **Checkpoint Availability:** No CNN AI class used the exact training checkpoint. The CNN corpus used `gpt-4o-mini` rather than `gpt-4o`; `Yi-Large` is discontinued, and its CNN label is populated by `deepseek-v4-pro`; the remaining four legacy checkpoints (`google/gemma-2-9b-it`, `meta-llama/llama-3-8b-instruct`, `mistralai/mistral-7b-instruct`, and `qwen/qwen-2-72b-instruct`) have been officially retired upstream and replaced by their newer architectural successors (`gemma-3-12b-it`, `llama-3.1-8b`, `mistral-nemo`, and `qwen-2.5-72b`). The hosted audit therefore found **zero exact matches**, not one.
+  > 1. **Checkpoint Availability:** No CNN AI class used the exact training checkpoint. The CNN corpus used `gpt-4o-mini` rather than `gpt-4o`; the processed `Yi-Large` slot is populated by `deepseek-v4-pro` (reported as `deepseek-v4-pro`); and the four open-weight checkpoints used for training (`google/gemma-2-9b-it`, `meta-llama/Meta-Llama-3-8B-Instruct`, `mistralai/Mistral-7B-Instruct-v0.3`, `Qwen/Qwen2-72B-Instruct`) **remain publicly available on Hugging Face**, while their legacy hosted OpenRouter endpoints are deprecated and return HTTP 404. The earlier “officially retired upstream” / “404 weights” wording is withdrawn. The hosted audit found **zero exact endpoint matches**, not one. The probe snapshot is retained at `results/phase3/T1_endpoint_audit_snapshot.txt`.
   > 
-  > 2. **Controlled Variable Rationale:** Regenerating with newer checkpoints would reintroduce generator shift alongside corpus shift, undermining the isolation of corpus effects.
+  > 2. **Controlled Variable Rationale:** Regenerating with newer checkpoints would reintroduce generator shift alongside corpus shift, undermining the isolation of corpus effects. Local regeneration with the original weights was technically possible but was not performed within the available compute/time budget.
   > 
   > 3. **Contingency Adoption:** As instructed ("*If too few classes remain, we will report the set as an unseen-generator test instead*"), we adopt the contingency plan:
-  >    - The multi-class CNN/DailyMail results ($Acc = 0.2656$) are formally framed and reported as an **Unseen-Generator / Out-of-Distribution (OOD) Generator Test**, demonstrating classifier behavior when encountering novel model signatures.
+  >    - The CNN/DailyMail evaluation is formally framed as an **Unseen Corpus + Prompt + Generator Test**, not an isolated unseen-generator test. Under the original 7-class label space (with the `deepseek-v4-pro` slot retained), clean metrics are **26.06% accuracy / 19.28% Macro-F1** ($N = 6{,}935$); raw metrics are **26.56% / 19.92%** ($N = 6{,}999$).
+  >    - A separate 6-class model is trained after formally dropping the `deepseek-v4-pro` slot. Its clean metrics are **30.22% accuracy / 25.28% Macro-F1** ($N = 5{,}939$); raw metrics are **30.80% / 26.01%** ($N = 6{,}000$). Both are above 6-class / 7-class chance but far below in-distribution performance.
   >    - The **binary detection performance** on CNN/DailyMail (**84.66% raw accuracy / 70.14% Macro F1**; **84.69% / 70.27%** clean) is reported with an explicit majority baseline: **87.50% raw / 87.41% clean**. The model is below the majority baseline, with balanced accuracy 73.96% / 74.02% and Human recall ≈59.7%, so this is weak cross-corpus transfer rather than evidence of strong generalization.
+  >    - Scripts/artifacts: `src/phase3/task1_cnn_multiclass_ood.py`, `results/phase3/T1_cnn_multiclass_ood_metrics.csv`, and the four `T1_cnn_{6class,7class}_confusion_{raw,clean}.csv` files.
   > 
   > ---
   > 
   > **تحديث المهمة الأولى: منهجية تدقيق ونسب بيانات المجموعة الثانية (CNN)**
   > بناءً على مراجعة توفر نقاط التحقق (Checkpoints) الأصلية على واجهات برمجة التطبيقات السحابية:
   > 
-  > 1. **حالة النماذج:** لا توجد أي فئة من فئات CNN استخدمت نقطة التحقق التدريبية نفسها. استخدمت CNN نموذج `gpt-4o-mini` بدلاً من `gpt-4o`، ونموذج `Yi-Large` متوقف وتُملأ فئته في CNN بواسطة `deepseek-v4-pro`. أما بقية النماذج القديمة (`gemma-2-9b-it`، `llama-3-8b-instruct`، `mistral-7b-instruct`، `qwen-2-72b-instruct`) فقد أُوقفت من مزودي الخدمة واستُبدلت بأجيال أحدث (`gemma-3-12b-it`، `llama-3.1-8b`، `mistral-nemo`، `qwen-2.5-72b`). لذلك بلغ عدد التطابقات الدقيقة **صفراً** وليس واحداً.
+  > 1. **حالة النماذج:** لا توجد أي فئة من فئات CNN استخدمت نقطة التحقق التدريبية نفسها. استخدمت CNN نموذج `gpt-4o-mini` بدلاً من `gpt-4o`، وفئة `Yi-Large` في CNN مملوءة بواسطة `deepseek-v4-pro` وليست توليداً من Yi-Large. نقاط التحقق مفتوحة الأوزان (`gemma-2-9b-it`، `Llama-3-8B-Instruct`، `Mistral-7B-Instruct-v0.3`، `Qwen2-72B-Instruct`) **ما زالت متاحة للتنزيل من Hugging Face**؛ ما توقف هو نقاط النهاية المستضافة القديمة على OpenRouter (HTTP 404). لذلك بلغ عدد التطابقات الدقيقة عبر نقاط النهاية **صفراً** وليس واحداً.
   > 
-  > 2. **مبرر ضبط المتغيرات:** إن التوليد بنماذج أحدث سيعيد إدخال متغير اختلاف المولدات إلى جانب اختلاف مجموعة النصوص، مما ينقض شرط عزل أثر المجموعة الصحفية.
+  > 2. **مبرر ضبط المتغيرات:** إن التوليد بنماذج أحدث سيعيد إدخال متغير اختلاف المولدات إلى جانب اختلاف مجموعة النصوص، مما ينقض شرط عزل أثر المجموعة الصحفية. لم يُنفَّذ التوليد المحلي بالأوزان الأصلية بسبب قيود الحساب والوقت.
   > 
-  > 3. **اعتماد خطة الطوارئ المقترحة:** عملاً بتوجيه المشرف الصريح، تقرر تثبيت تقييم مجموعة CNN/DailyMail ليكون **اختباراً للمولدات غير المرئية والخارجة عن التوزيع (Unseen-Generator / OOD Test)**، مع الحفاظ على نتائج الكشف الثنائي (Binary Detection) البالغة **84.66% دقة و 70.14% F1** دون تغيير.
+  > 3. **اعتماد خطة الطوارئ المقترحة:** عملاً بتوجيه المشرف الصريح، تقرر تثبيت تقييم مجموعة CNN/DailyMail ليكون **اختباراً لمجموعة نصوص وموجه ومولد غير مرئية مجتمعة (Unseen Corpus + Prompt + Generator Test)**. النتائج النظيفة: **26.06% دقة و19.28% Macro-F1** في الفضاء السباعي ($N=6,935$)، و**30.22% دقة و25.28% Macro-F1** في الفضاء السداسي بعد حذف فئة `deepseek-v4-pro` ($N=5,939$). أما الكشف الثنائي فبلغ **84.69% دقة و70.27% F1** نظيفاً، وهو **أقل من خط الأساس الأغلبي 87.41%**، لذا يُوصف بأنه نقل ضعيف بين المجموعات وليس تعميماً قوياً.
 
 ---
 
 ### 2. Centroid Geometry vs. Prediction Conflict
 - **Problem**:
-  - Unweighted Euclidean/Cosine distances in the 791-d Features+BERT space placed `Yi-Large` nearest to Gemma paraphrases, not `Gemma-2-9B`. The geometric analysis contradicts the classifier predictions.
+  - Unweighted Euclidean/Cosine distances in the 791-column Features+BERT space (788 model features) placed `Yi-Large` nearest to Gemma paraphrases, not `Gemma-2-9B`. The geometric analysis contradicted the classifier predictions.
 - **Action Required**:
   - Recompute distances in the space the model actually uses:
     - **Option A**: Weighted by XGBoost feature gain.
@@ -66,12 +68,12 @@
   > 
   > 1. **Feature Count Clarification:** The authoritative dataset (`data/processed/processed_articles.csv`) contains **$N = 51,181$ rows** and 791 total columns: 768 BERT embeddings, 3 metadata columns (`Writer`, `Text`, `is_AI`), and exactly **20 handcrafted features** ($791 - 768 - 3 = 20$). The earlier $8,400$ figure was a historical balanced-subsample reference; `task2_centroids.py` computes on all 51,181 rows. The confusion in the preliminary report arose from taking $791 - 768 = 23$ without deducting the 3 non-feature metadata fields. The first paper's count of 20 features is verified and exact.
   > 
-  > 2. **Geometric Alignment with Predictions:** The previous contradiction was an artifact of isotropic, unweighted distances across the frozen 768-dimensional BERT space. Recomputing centroid distances in the model's actual decision space completely resolves the issue:
-  >    - **Option A (XGBoost Gain-Weighted, 788-d):** The nearest centroid to Gemma paraphrases is unequivocally **`Gemma-2-9B`** (Euclidean: $0.3938$ vs. $0.4521$ for `Yi-Large`; Cosine: Rank 1 at $0.3933$ vs. $0.1092$ for `Mistral-7B` and $0.1023$ for `Yi-Large`). Qwen-2 and Mistral-7B also converge toward Gemma-2-9B.
-  >    - **Option B (20 Handcrafted Features Only):** Similarly confirms **`Gemma-2-9B`** as the closest centroid across both Euclidean ($1.7296$ vs. $1.8016$ for `GPT-4o` and $2.7508$ for `Yi-Large`) and Cosine ($0.8081$, Rank 1 vs. $0.6906$ for `GPT-4o` and $-0.0920$ for `Yi-Large`) metrics.
-  >    - **Sensitivity:** The unreported `OptionB_GainWeighted` Euclidean variant places the Gemma-2-9B paraphrase set marginally closer to `GPT-4o` (0.6618) than to `Gemma-2-9B` (0.6641). The attractor conclusion therefore holds for the retained Option A and unweighted handcrafted Option B, but is not invariant to the weighted-handcrafted variant; this caveat is now disclosed.
+  > 2. **Geometric Alignment with Predictions:** The previous contradiction was primarily an artifact of isotropic, unweighted distances across the frozen 768-dimensional BERT space. Recomputing centroid distances in the model's actual decision space largely resolves it:
+  >    - **Option A (XGBoost Gain-Weighted, 788-d):** The nearest centroid to Gemma paraphrases is **`Gemma-2-9B`** (Euclidean: $0.3938$ vs. $0.4521$ for `Yi-Large`; Cosine: Rank 1 at $0.3933$ vs. $0.1092$ for `Mistral-7B` and $0.1023$ for `Yi-Large`). Qwen-2 and Mistral-7B also converge toward Gemma-2-9B.
+  >    - **Option B (20 Handcrafted Features Only):** On the Gemma-27B paraphrase set, **`Gemma-2-9B`** is closest under Euclidean ($1.7296$ vs. $1.8016$ for `GPT-4o` and $2.7508$ for `Yi-Large`) and Cosine ($0.8081$, Rank 1 vs. $0.6906$ for `GPT-4o` and $-0.0920$ for `Yi-Large`).
+  >    - **Sensitivity (must be disclosed):** The result is not invariant to every handcrafted reweighting. On the **Gemma-2-9B paraphrase set**, the unweighted `OptionB_Handcrafted` Euclidean distance is Gemma-2-9B $1.9630$ vs. GPT-4o $1.9754$ (0.6% margin in favour of Gemma), but the `OptionB_GainWeighted` Euclidean variant gives GPT-4o $0.6618$ vs. Gemma-2-9B $0.6641$ (0.35% margin in favour of GPT-4o). The earlier word “unequivocally” is withdrawn. The primary evidence remains Option A plus classifier behaviour.
   > 
-  > *Conclusion:* The feature geometry now directly confirms classifier behavior; there is no contradiction, and the analysis will be retained.
+  > *Conclusion:* Decision-space geometry supports the attractor hypothesis, but the evidence is specification-dependent. The analysis is retained with the near-tie disclosed, not presented as an unconditional geometric proof.
   > - Output files: `results/phase3/T2_Centroid_OptionA_GainWeighted_{Euclidean,Cosine}.csv`, `results/phase3/T2_Centroid_OptionB_Handcrafted_{Euclidean,Cosine}.csv`.
   > 
   > ---
@@ -86,7 +88,7 @@
   > 
   > 2. **حل تناقض المسافات الهندسية (Centroid Geometry):**
   >    - تبيّن أن التناقض السابق كان ناتجاً عن حساب المسافات الإقليدية غير الموزونة عبر أبعاد BERT الـ 768.
-  >    - بمجرد حساب المسافات في فضاء القرار الفعلي للنموذج (سواء عبر ترجيح الميزات بـ **XGBoost Gain** أو الاقتصار على **الميزات اليدوية العشرين**)، أصبحت أقرب نقطة مركزية لنصوص Gemma هي **`Gemma-2-9B`** بلا منازع، مما يثبت تجريبياً وهندسياً ظاهرة النموذج الجاذب (Attractor).
+  >    - بعد حساب المسافات في فضاء القرار الفعلي للنموذج، أصبحت **`Gemma-2-9B`** أقرب نقطة مركزية في الخيار A وفي الخيار B غير الموزون لمجموعة Gemma-27B. لكن النتيجة ليست ثابتة تماماً: في مجموعة Gemma-2-9B المكافأة، يعطي الخيار B غير الموزون Gemma-2-9B $1.9630$ مقابل GPT-4o $1.9754$ (هامش 0.6%)، بينما يعطي الخيار B الموزون GPT-4o $0.6618$ مقابل Gemma-2-9B $0.6641$ (هامش 0.35%). لذلك يدعم التحليل فرضية الجاذب لكنه ليس برهاناً هندسياً قاطعاً، وقد تم سحب كلمة «بلا منازع».
 
 ---
 
@@ -111,9 +113,10 @@
   >    - This leakage is consistent across all seeds under the frozen first-occurrence duplicate-text mapping (Seed 42: 78.48%, Seed 123: 81.78%, Seed 999: 80.74%, Seed 2024: 79.01%, Seed 8080: 81.20%). Seed counts differ by 1–3 rows depending on which duplicate occurrence is selected; the mapping is now fixed in `src/phase3/task3_leakage_audit.py`.
   > 
   > 2. **Untranslated Text Pipeline Discrepancy:**
-  >    - TF-IDF and exact-string audits revealed a **1.0000 matching similarity** between the texts in `processed_translation.csv` and the clean `processed_articles.csv`.
+  >    - An **exact-string audit** shows that all 1,729 texts in `processed_translation.csv` are exact duplicates of training articles (1,729/1,729 exact matches). The earlier phrase “1.0000 TF-IDF cosine” is withdrawn: the audit did not compute TF-IDF similarity; it exact-matched strings and then assigned `match_similarity = 1.0` by construction.
   >    - In the data engineering pipeline, the `Text` column in `processed_translation.csv` retained the unperturbed original text rather than the round-trip translated text (which resided in an intermediate column).
   >    - Consequently, RoBERTa was evaluating largely memorized training samples (~78.5% of the evaluation set), directly driving the 1.0000 F1 score on Seed 42.
+  >    - On the **remediated 667-row test set**, the leakage check is clean: **0 exact string matches** to the 51,181-row training corpus, mean nearest-neighbour TF-IDF cosine **0.6948**, median **0.7165**, maximum **0.9797** (below 0.99; one row at or above 0.95). The remediated set is therefore not a re-used training sample. Reproduce with `src/phase3/task3_667_leakage_audit.py`; summary in `results/phase3/T3_667_leakage_audit.json`.
   > 
   > 3. **Surface Artifacts & Trivial Separability (Unperturbed $N=1,729$ Historical Audit Baseline):**
   >    - As an illustrative historical baseline computed on the unperturbed `processed_translation.csv` ($N=1,729$) prior to leakage remediation, AI-generated articles feature structural prompt signatures that are entirely absent in human articles:
@@ -123,6 +126,7 @@
   >      - Bullet points: **12.7%** in AI vs. **3.6%** in Human.
   >    - On that unperturbed pre-remediation set ($N=1,729$), a reproducible formatting-only Random Forest (depth 4, five-fold stratified CV) reaches **86.18% accuracy / 49.77% Macro F1** on the full set and **90.49% / 90.40%** on a balanced 247-Human/247-AI subset. An extended surface-feature model reaches **98.61% / 97.11%** on the full set. The earlier **94.97% / 89.71%** figure is withdrawn: its generating script and feature definition are not retained, and the value could not be reproduced. The reproducibility script is `src/phase3/task3_shallow_baseline.py`.
   >    - For the main robustness conclusions, on the strictly held-out test split ($N=667$, `T3_surface_artifacts_comparison.csv`), NLLB round-trip translation compresses text length by **-55.02%** ($2,870.8 \to 1,291.3$ chars) and strips surface formatting across AI articles (markdown bolding: **57.35% $\to$ 44.28%**, `Title:` tags: **38.89% $\to$ 16.83%**, `Date:` tags: **9.48% $\to$ 5.07%**, bullet points: **13.24% $\to$ 0.16%**; Human remains **0.0%** across all markdown/header tags).
+  >    - **667-row shallow baseline (reproducible):** `src/phase3/task3_shallow_baseline_667.py` regenerates both `T3_surface_artifacts_comparison.csv` and `T3_shallow_classifier_667_metrics.csv` (Random Forest, depth 4, 500 trees, five-fold stratified CV, seed 42). On the natural 612 AI / 55 Human imbalance, formatting-only reaches **91.75% accuracy but balanced accuracy 50.00% / Macro-F1 47.85%**; extended surface features reach **93.40% accuracy, balanced accuracy 60.00%, Macro-F1 64.93%**. On the balanced 55/55 diagnostic sample, formatting-only reaches **74.55% / 72.78% Macro-F1**, and extended features reach **90.91% / 90.91% Macro-F1**. The natural-imbalance accuracy is inflated by the class ratio; the balanced diagnostic is the honest comparison. Surface artifacts remain sufficient to separate many AI from Human articles after NLLB translation, so the RoBERTa result cannot be attributed to neural detection alone.
   > 
   > 4. **Remediation & True Uncorrupted Robustness Metrics (Zero Leakage):**
   >    - Located genuine NLLB-200 round-trip translation strings in `archive/legacy/old_things/paraphrasing/nllb/with_semantic_similarity.csv`.
@@ -133,7 +137,7 @@
   > 
   > | Setting | Metric Summary (5-Seed Mean ± Std) | Seed 42 | Key Analytical Finding |
   > |---|---|---|---|
-  > | **Setting A** (Both Human & AI NLLB-Translated) | Acc: **0.9576 ± 0.0203**, F1: **0.7817 ± 0.1090**<br>AI Rec: **0.9997 ± 0.0007**, Human Rec: **0.4431 ± 0.2288** | Acc: 0.9820<br>F1: 0.9351 | **AI Recall is 99.97%**. Errors are almost entirely False Positives on machine-translated Human text (RoBERTa detecting NLLB neural signature on human texts); Seed 42 has one AI false negative (`[[44, 11], [1, 611]]`). |
+  > | **Setting A** (Both Human & AI NLLB-Translated) | **Balanced Acc: 0.7214 ± 0.1141**<br>Raw Acc: **0.9576 ± 0.0203**, F1: **0.7817 ± 0.1090**<br>AI Rec: **0.9997 ± 0.0007**, Human Rec: **0.4431 ± 0.2288** | Acc: 0.9820<br>F1: 0.9351 | **AI Recall is 99.97%**. Errors are almost entirely False Positives on machine-translated Human text (RoBERTa detecting NLLB neural signature on human texts); Seed 42 has one AI false negative (`[[44, 11], [1, 611]]`). The 612:55 AI/Human imbalance and Human $N=35$–$55$ per seed make the raw 95.76% accuracy misleading; balanced accuracy is **72.14% ± 11.41%**. |
   > | **Setting B1** (Standard Attack: Clean Human vs. NLLB AI) | Acc: **0.9990 ± 0.0009**, F1: **0.9968 ± 0.0029**<br>AI Rec: **0.9997 ± 0.0007**, Human Rec: **0.9920 ± 0.0110** | Acc: 0.9985<br>F1: 0.9951 | Realistic attack scenario: unperturbed human test articles vs. NLLB-translated AI attacks. Macro-F1 remains near ceiling (**99.68%**). |
   > | **Setting B2** (Balanced 1:1 Attack: 50% Human : 50% AI) | Acc: **0.9960 ± 0.0055**, F1: **0.9960 ± 0.0055**<br>AI Rec: **1.0000 ± 0.0000**, Human Rec: **0.9920 ± 0.0110** | Acc: 1.0000<br>F1: 1.0000 | Evaluates 1:1 class parity under standard attack; demonstrates complete invariance to class imbalance (**99.60% F1, 100% AI Recall**). |
   > 
@@ -144,15 +148,14 @@
   > 
   > ### ملخص نتائج تدقيق وتصحيح عينة الترجمة (Task 3 Remediation Summary)
   > 1. **تشخيص سبب درجة 1.0000 غير الواقعية:**
-  >    - أثبت التدقيق أن الملف القديم احتوى على نصوص أصلية غير مترجمة (تطابق 100%)، مع تسرب 78.5% من بيانات التدريب والتحقق إلى مجموعة التقييم.
+  >    - أثبت تدقيق التطابق النصي الدقيق أن جميع نصوص الملف القديم (1,729) هي نسخ حرفية من نصوص التدريب (1,729/1,729)، مع تسرب 78.5% من بيانات التدريب والتحقق إلى مجموعة التقييم. تم سحب عبارة «تشابه TF-IDF = 1.0000» لأن التدقيق لم يحسب TF-IDF، بل طابق النصوص حرفياً ثم أسند قيمة تشابه 1.0 بالبناء.
   > 2. **التصحيح المنهجي وعزل عينة الاختبار (Zero Data Leakage):**
-  >    - تم استخراج النصوص المترجمة فعلياً بنموذج NLLB-200 من أرشيف التجارب، والتحقق برمجياً من اختلافها النصي.
+  >    - تم استخراج النصوص المترجمة فعلياً بنموذج NLLB-200 من أرشيف التجارب، والتحقق برمجياً من اختلافها النصي: **0 تطابق حرفي** مع مجموعة التدريب، ومتوسط أقرب تشابه TF-IDF هو **0.6948** (الوسيط **0.7165**، والحد الأقصى **0.9797**، أي أقل من 0.99).
   >    - تم حصر التقييم فقط وبشكل صارم على عينة الاختبار المعزولة تماماً (`test split`) وضمان 0% تسرب.
   > 3. **النتائج الحقيقية الموثقة لـ RoBERTa (القيم السليمة للنشر):**
   >    - للنموذج الأساسي (Seed 42): الدقة **98.20%** ودرجة **Macro F1 = 93.51%**.
-  >    - المتوسط عبر 5 بذور (Seeds): الدقة **95.76% ± 2.03%** ودرجة **Macro F1 = 78.17% ± 10.90%** (في الإعداد A)، و **99.90% ± 0.09% دقة / 99.68% ± 0.29% F1** في إعداد الهجوم القياسي (Setting B1).
+  >    - المتوسط عبر 5 بذور (Seeds): الدقة الخام **95.76% ± 2.03%**، لكن الدقة المتوازنة **72.14% ± 11.41%** فقط بسبب اختلال 612:55 وصغر عدد Human ($N=35$–$55$ لكل بذرة). Macro F1 = **78.17% ± 10.90%** في الإعداد A، و**99.90% ± 0.09% دقة / 99.68% ± 0.29% F1** في إعداد الهجوم القياسي (Setting B1).
   >    - لم يعد الشذوذ ناتجاً عن التسرب؛ فالمتوسطات الحقيقية هي 0.9968 (B1) و0.9960 (B2)، لكن درجات 1.0000 ما زالت تظهر مشروعة في خمس حالات محددة (B2 للبذور 42 و999 و8080؛ B1 للبذور 999 و8080) بسبب قابلية الفصل العالية، وليست دليلاً على تسرب.
-
 ---
 
 ### 4. Confidence Calibration on Retrained 6-Class Model
@@ -168,7 +171,7 @@
   > **Task 4: Confidence Calibration Analysis on Retrained 6-Class Model**
   > 
   > In accordance with item 4 of the revision guidelines, we evaluated correct-versus-wrong confidence dynamics on the retrained six-class model (with Gemma-2-9B excluded) across both Gemma-27B and Mistral-7B paraphrase corpora:
-  > - **Mitigation of Pathological Overconfidence:** In the 7-class baseline, erroneous predictions exhibited uncalibrated overconfidence ($\mu = 0.9039$ on Gemma-27B; $\mu = 0.8676$ on Mistral-7B). Removing the attractor reduced error confidence to $\mu = 0.6129$ ($-29.1\%$) and $\mu = 0.7055$ ($-16.2\%$), respectively.
+  > - **Substantial Reduction of Pathological Overconfidence:** In the 7-class baseline, erroneous predictions exhibited uncalibrated overconfidence ($\mu = 0.9039$ on Gemma-27B; $\mu = 0.8676$ on Mistral-7B). Removing the attractor reduced error confidence to $\mu = 0.6129$ (**29.1 percentage points**, $-32.2\%$ relative) and $\mu = 0.7055$ (**16.2 percentage points**, $-18.7\%$ relative), respectively.
   > - **Restoration of Decision Confidence Separation:** The confidence differential ($\Delta = \text{Conf}_{\text{Correct}} - \text{Conf}_{\text{Wrong}}$) shifted from an inverted/flat margin ($-0.0248$ and $+0.0001$) to a robust positive separation of $+0.1507$ on Gemma-27B and $+0.1482$ on Mistral-7B.
   > - **Quantitative Calibration Gains:** Expected Calibration Error (ECE, 10-bin) fell by more than half: from $0.7666 \to \mathbf{0.3183}$ for Gemma-27B and from $0.5538 \to \mathbf{0.2810}$ for Mistral-7B. Concurrently, Brier scores improved from $1.5740 \to \mathbf{0.8980}$ and $1.1929 \to \mathbf{0.7470}$.
   > - **Conclusion:** Removing the attractor substantially reduces pathological error overconfidence and restores a positive confidence gap, but it does **not** restore good calibration: the 6-class Gemma-27B Brier score (0.8980) is worse than a uniform forecast (0.8333; skill score $-0.0776$), ECE remains 0.3183, and the 7-class matched-sample accuracy (0.1340) is below $1/7$ chance (0.1429). The defensible claim is relative improvement, not calibrated certainty.
@@ -190,9 +193,9 @@
   > **Calibration benchmark:** For a 6-class problem the uniform-forecast Brier is 0.8333 and chance accuracy is 0.1667; for 7 classes they are 0.8571 and 0.1429. The 6-class Gemma-27B Brier (0.8980) is worse than uniform (skill score $-0.0776$), and the 7-class matched accuracy (0.1340) is below chance. The 6-class model is therefore better than the 7-class baseline but still not well calibrated.
   > 
   > ### Key Scientific Findings:
-  > 1. **Elimination of Pathological Overconfidence on Errors:**
+  > 1. **Substantial Reduction of Pathological Overconfidence on Errors:**
   >    - Under the 7-class baseline, erroneous predictions suffered from severe overconfidence due to the `Gemma-2-9B` attractor pull ($0.9039$ on Gemma-27B, $0.8676$ on Mistral-7B), rendering wrong predictions indistinguishable from (or even more confident than) correct ones.
-  >    - In the retrained 6-class model, confidence on errors plummets by **29.1 percentage points** on Gemma-27B ($0.9039 \to 0.6129$) and by **16.2 percentage points** on Mistral-7B ($0.8676 \to 0.7055$).
+  >    - In the retrained 6-class model, confidence on errors drops by **29.1 percentage points** on Gemma-27B ($0.9039 \to 0.6129$) and by **16.2 percentage points** on Mistral-7B ($0.8676 \to 0.7055$).
   > 
   > 2. **Positive Confidence Gap ($\mu_{\text{correct}} - \mu_{\text{wrong}}$):**
   >    - In the baseline 7-class model, the confidence gap was negative or zero ($-0.0248$ on Gemma-27B, $+0.0001$ on Mistral-7B).
@@ -223,8 +226,8 @@
 ### 5. Data Cleaning, Flagged Rows & Documentation
 - **Action Required**:
   - Clean or document the flagged rows in the dataset:
-    - Row 474: LLaMA refusal.
-    - 57 short/refusal/truncation rows under 200 characters (53 LLaMA + 2 Qwen + 2 Yi-Large), including Qwen rows 526/682 and Yi-Large rows 175/228.
+    - Row 474: LLaMA refusal (one of the 53 LLaMA short rows, not an additional row).
+    - 57 short/refusal/truncation rows under 200 characters (53 LLaMA + 2 Qwen + 2 `deepseek-v4-pro`), including Qwen rows 526/682 and `deepseek-v4-pro` rows 175/228.
     - Source-only DeepSeek row 915 (`READING,`), which is not present in the processed CNN corpus.
     - One duplicated prompt (rows 128/233, all 8 writers).
   - Apply the exact same quality checks and hygiene filters to the regenerated CNN set.
@@ -241,14 +244,14 @@
 >    - Remediation: Documented and filtered in clean robustness split. Eliminates degenerate non-narrative tokens that distort stylometric, lexical diversity (TTR), and perplexity features.
 >
 > 2. **Short Articles (<200 Characters, 57 Rows Total):**
->    - 53 rows are in `llama_3_8b` (including row 474 refusal and row 526 refusal/truncation), 2 are in `qwen_2_72b` (rows 526 and 682), and 2 are in `deepseek_pro` / the `Yi-Large` class (rows 175 and 228). The earlier wording that all short rows were confined to LLaMA was incorrect.
+>    - 53 rows are in `llama_3_8b` (including row 474 and row 526); row 474 is one of these 53, not an extra row, 2 are in `qwen_2_72b` (rows 526 and 682), and 2 are in `deepseek_pro` / the `deepseek-v4-pro` class (rows 175 and 228). The earlier wording that all short rows were confined to LLaMA was incorrect.
 >    - Remediation: Documented length distribution; applied a consistent threshold ($\ge 200$ characters) to guarantee reliable sentence-length, burstiness, and syntax-depth estimates.
 >
 > 3. **Truncated Articles (Rows 526, 682, 175, 228; plus source-only row 915):**
 >    - Qwen-2.5 row 526: 101 characters; Qwen-2.5 row 682: 94 characters (`CANOWINDRA, NSW — The community of Can`).
->    - Yi-Large row 175: 118 characters; Yi-Large row 228: 16 characters (`**British Family`).
+>    - `deepseek-v4-pro` row 175: 118 characters; row 228: 16 characters (`**British Family`).
 >    - LLaMA row 526: 110-character refusal.
->    - Raw DeepSeek row 915 is an 8-character truncation (`READING,`) but is **not present in the processed CNN corpus** (Yi-Large has 999 processed rows). It is documented in `T5_data_hygiene_notes.csv`, not counted among the 65 processed rows.
+>    - Raw DeepSeek row 915 is an 8-character truncation (`READING,`) but is **not present in the processed CNN corpus** (`deepseek-v4-pro` has 999 processed rows). It is documented in `T5_data_hygiene_notes.csv`, not counted among the 65 processed rows.
 >
 > 4. **Duplicated Prompt (Row Indices 128 and 233 across ALL 8 Writers):**
 >    - Prompt `"Police seized Rafi, 10, and Dvora, 6, in a Maryland park on Sunday..."` appeared twice in the sampled test set (wide-format rows 128 and 233).
@@ -262,10 +265,10 @@
 >    | **Binary** | Accuracy | 0.8466 | 0.8469 | +0.0003 | 7,999 | 7,934 |
 >    | **Binary** | Macro-F1 | 0.7014 | 0.7027 | +0.0013 | 7,999 | 7,934 |
 >    | **Multi-Class** | Accuracy | 0.2656 | 0.2606 | -0.0050 | 6,999 | 6,935 |
->    | **Multi-Class** | Macro-F1 | 0.1992 | 0.1928 | -0.0064 | 6,999 | 6,935 |
+>    | **Multi-Class** | Macro-F1 | 0.1992 | 0.1928 | **-0.0063** | 6,999 | 6,935 |
 >
 >    *Note:* Multi-class denominators exclude Claude (1,000 rows), hence 6,999/6,935 rather than 7,999/7,934.
->    *Conclusion:* Filtering all 65 flagged anomalies alters performance metrics by at most 0.64 percentage points, confirming that the *shift* from cleaning is small. It does not make the absolute binary score strong: 84.69% remains below the 87.41% clean majority baseline.
+>    *Conclusion:* Filtering all 65 flagged anomalies alters performance metrics by at most 0.63 percentage points (largest shift: multi-class Macro-F1 $-0.0063$), confirming that the *shift* from cleaning is small. It does not make the absolute binary score strong: 84.69% remains below the 87.41% clean majority baseline.
 >
 > 6. **Formal Exclusion Confirmation — Claude-3-Haiku:**
 >    - **Methodological Statement for Manuscript:** Claude-3-Haiku was successfully generated across all 1,000 CNN-DailyMail prompts (`claude_haiku` column) and was retained for the zero-shot Binary Detection evaluation (where all AI generators map to $\text{is\_AI} = 1$). However, Claude-3-Haiku was intentionally and formally excluded from the Multi-Class Attribution evaluation.
@@ -276,9 +279,9 @@
 >
 > ### ملخص تنظيف البيانات وتوثيق الاستبعادات (Task 5 Summary)
 > 1. **التدقيق البرمجي الشامل للبيانات:**
->    - تم فحص وتوثيق نص الرفض الصادر من LLaMA (السطر 474)، و57 مقالاً قصيراً (< 200 حرف: 53 LLaMA + 2 Qwen + 2 Yi-Large)، وحالات القطع النصي (Qwen 526/682، Yi-Large 175/228، LLaMA 526)، ومطابقة الموجه المكرر (السطران 128 و233). السطر 915 من DeepSeek موثق كحالة مصدرية غير موجودة في الملف المعالج، وليس ضمن الـ65 صفاً المحذوفة.
+>    - تم فحص وتوثيق نص الرفض الصادر من LLaMA (السطر 474)، و57 مقالاً قصيراً (< 200 حرف: 53 LLaMA + 2 Qwen + 2 deepseek-v4-pro)، وحالات القطع النصي (Qwen 526/682، deepseek-v4-pro 175/228، LLaMA 526)، ومطابقة الموجه المكرر (السطران 128 و233). السطر 915 من DeepSeek موثق كحالة مصدرية غير موجودة في الملف المعالج، وليس ضمن الـ65 صفاً المحذوفة.
 > 2. **إثبات استقرار وموثوقية النتائج (Robustness Verification):**
->    - أظهرت مقارنة الأداء قبل وبعد الفلترة أن التغير الإحصائي لا يتجاوز 0.0064، ما يؤكد أن استنتاجات البحث غير متأثرة بهذه الشوائب. لكن الدقة الثنائية 84.69% تبقى أقل من خط الأساس الأغلبي 87.41%.
+>    - أظهرت مقارنة الأداء قبل وبعد الفلترة أن التغير الإحصائي لا يتجاوز 0.0063، ما يؤكد أن استنتاجات البحث غير متأثرة بهذه الشوائب. لكن الدقة الثنائية 84.69% تبقى أقل من خط الأساس الأغلبي 87.41%.
 > 3. **التوثيق المنهجي الصارم لاستبعاد Claude-3-Haiku:**
 >    - تم توثيق توليد Claude واستخدامه في الكشف الثنائي (AI vs Human)، مع استبعاده المنهجي الصحيح من التصنيف متعدد الفئات لعدم وجوده ضمن فئات التدريب السبع للنموذج المغلق.
 
@@ -300,11 +303,15 @@
 
 > ### Empirical Findings & Clustered Logistic Regressions (Task 6)
 >
-> To place the rewrite-magnitude correlation on rigorous document-level statistical footing, we evaluated $N=12,569$ individual article pairs across six paraphrasers (`Gemma-2-9B`, `Qwen-2-72B`, `LLaMA-3`, `Mistral-7B`, `GPT-4o-mini`, plus $N=2,072$ reconstructed `Gemma-27B` pairs; restricted $N=10,497$).
+> To place the rewrite-magnitude correlation on rigorous document-level statistical footing, we rebuilt the analysis at the document level. The retained cache contains **$N=12,551$ rows**, of which **12,549** have a valid GPU BERTScore reference; the restricted five-paraphraser regime contains **$N=10,482$** valid rows. The six-paraphraser regime is labelled **Cross-Sample / Extended-Pool Sensitivity Analysis** because reconstructed Gemma-27B contributes mostly different articles (18.1% overlap with the 5-paraphraser article pool). The restricted five-paraphraser regime is the primary clean comparison.
 >
-> **Rebuild note:** the original script attached raw `Original_Text` rows to processed prediction rows by positional `iloc`, mispairing roughly 42% of documents. The rebuilt pipeline (`src/phase3/task6_logistic_regression.py`) joins only on exact normalized `(Paraphrased_Text, Writer)` pairs. All 12,569 processed rows join; the two duplicate `Gemma-27B` keys are matched in occurrence order. Eighteen raw rows (three per config) have missing `Original_Text`; these are meta-refusals whose prompt references were recovered from the parallel writer block, not dropped.
+> **Pairing rebuild and explicit exclusion:** the previous script attached raw `Original_Text` rows to processed predictions by positional `iloc` and recovered missing references through a parallel writer block. That recovery is invalid because the raw files are stacked writer blocks, so identical prompt indices refer to different articles in different blocks. The rebuilt pipeline (`src/phase3/task6_logistic_regression.py`) joins only on exact normalized `(Paraphrased_Text, Writer)` pairs and uses the committed `src/phase2/task4b_gemma27b_match.py` reconstruction for Gemma-27B. The processed prediction files contain **2,098** Gemma-2-9B rows, **2,099** Qwen-2-72B rows, 2,100 rows each for LLaMA-3, Mistral-7B, and GPT-4o-mini, and 2,072 reconstructed Gemma-27B rows; these are the denominators before the 18 explicit exclusions. The original positional misalignment affected **a substantial fraction of rows**; the earlier “42%” count cannot be verified from retained artifacts and is no longer claimed.
 >
-> **Missing rows vs. clusters are separate:** $12{,}600 = 6 \times 2{,}100$ expected; observed 12,569, i.e. 31 fewer (`Gemma-2-9B` $-2$, `Qwen-2-72B` $-1$, `Gemma-27B` $-28$). Clusters are $G=2{,}096$ distinct normalized original articles, not 2,097: the 2,100 prompt slots contain three recovered references that duplicate existing articles and one exact duplicate text (`Your Wednesday Briefing`), so $2{,}100 - 3 - 1 = 2{,}096$. The earlier $G=2{,}097$ was a `nan`-hash artifact from the three missing texts.
+> **Gemma-27B pairing validation:** the rebuilt raw file contains 2,094 pairs. TF-IDF top-1 match cosine has median **0.6561**, mean **0.6376**, and **0.0%** below 0.10. A paired TF-IDF recomputation gives median **0.651**, mean **0.635**, and 0.0% below 0.10. The previously retained file had median **0.151**, mean **0.254**, and **34.4%** below 0.10, confirming mispairing. The corrected Gemma-27B BERTScore is **$0.887848 \pm 0.024727$** ($N=2,067$ valid), not the corrupted $0.837$.
+>
+> **Eighteen explicitly excluded rows:** eighteen rows had missing/invalid references and were previously recovered from the wrong writer block. Fifteen are meta-refusals from the five-configuration raw files; the three Gemma-27B rows are valid article texts whose original references could not be matched. They are listed in `results/phase3/T6_excluded_rows.csv` and dropped, not recovered. Row arithmetic: $12{,}600$ expected $= 6 \times 2{,}100$; 31 processed rows are absent (`Gemma-2-9B` $-2$, `Qwen-2-72B` $-1$, reconstructed `Gemma-27B` $-28$); 18 are explicitly excluded; $12{,}600 - 31 - 18 = 12{,}551$ retained, with 12,549 valid BERTScore references. The restricted regime is $10{,}482$.
+>
+> Clusters are **$G=2{,}096$** distinct original articles in the restricted regime and **$G=3{,}782$** in the extended-pool regime, not 2,097. The earlier $G=2{,}097$ was a `nan`-hash artifact from three missing texts.
 >
 > We fit logistic regressions with standard errors clustered by original article, with paraphraser controls and a writer-fixed-effects robustness specification:
 >
@@ -314,49 +321,78 @@
 >
 > | Model | Outcome | Scope | Specification | N | G | Pseudo $R^2$ | BERTScore $\beta$ | Clustered SE | $z$ | $p$ | OR per +0.1 BERTScore [95% CI] |
 > |---|---|---|---|---|---|---|---|---|---|---|---|
-> | **1A** | Multi-Class | Full | Paraphraser controls | 12,569 | 2,096 | 0.0687 | **+9.5404** | 0.8934 | 10.68 | $1.28\times10^{-26}$ | **2.60** [2.18, 3.09] |
-> | **1A-WFE** | Multi-Class | Full | + Writer FE | 12,569 | 2,096 | 0.3098 | **+22.2700** | 1.1936 | 18.66 | $1.10\times10^{-77}$ | **9.27** [7.34, 11.72] |
-> | **1B** | Multi-Class | Restricted | Paraphraser controls | 10,497 | 2,096 | 0.0745 | **+13.7895** | 1.1333 | 12.17 | $4.62\times10^{-34}$ | **3.97** [3.18, 4.96] |
-> | **1B-WFE** | Multi-Class | Restricted | + Writer FE | 10,497 | 2,096 | 0.2891 | **+26.5980** | 1.5735 | 16.90 | $4.22\times10^{-64}$ | **14.29** [10.50, 19.46] |
-> | **2A** | Binary | Full | Paraphraser controls | 12,569 | 2,096 | 0.2746 | **+39.7836** | 1.4651 | 27.15 | $2.28\times10^{-162}$ | **53.43** [40.09, 71.20] |
-> | **2A-WFE** | Binary | Full | + Writer FE | 12,569 | 2,096 | 0.3794 | **+17.5290** | 1.5184 | 11.54 | $7.86\times10^{-31}$ | **5.77** [4.29, 7.77] |
-> | **2B** | Binary | Restricted | Paraphraser controls | 10,497 | 2,096 | 0.3410 | **+43.8422** | 1.7772 | 24.67 | $2.30\times10^{-134}$ | **80.18** [56.59, 113.59] |
-> | **2B-WFE** | Binary | Restricted | + Writer FE | 10,497 | 2,096 | 0.4669 | **+18.5668** | 1.7875 | 10.39 | $2.84\times10^{-25}$ | **6.40** [4.51, 9.09] |
+> | **1A** | Multi-Class | Extended-Pool | Paraphraser controls | 12,549 | 3,782 | 0.0706 | **+10.6932** | 0.9794 | 10.92 | $9.42\times10^{-28}$ | **2.91** [2.40, 3.53] |
+> | **1A-WFE** | Multi-Class | Extended-Pool | + Writer FE | 12,549 | 3,782 | 0.3171 | **+26.5219** | 1.4249 | 18.61 | $2.51\times10^{-77}$ | **14.19** [10.73, 18.76] |
+> | **1B** | Multi-Class | Restricted | Paraphraser controls | 10,482 | 2,096 | 0.0737 | **+13.6601** | 1.1394 | 11.99 | $4.09\times10^{-33}$ | **3.92** [3.14, 4.90] |
+> | **1B-WFE** | Multi-Class | Restricted | + Writer FE | 10,482 | 2,096 | 0.2883 | **+26.5795** | 1.5767 | 16.86 | $9.18\times10^{-64}$ | **14.27** [10.47, 19.43] |
+> | **2A** | Binary | Extended-Pool | Paraphraser controls | 12,549 | 3,782 | 0.2844 | **+40.6549** | 1.3911 | 29.22 | $9.34\times10^{-188}$ | **58.29** [44.38, 76.57] |
+> | **2A-WFE** | Binary | Extended-Pool | + Writer FE | 12,549 | 3,782 | 0.3823 | **+18.0784** | 1.5849 | 11.41 | $3.87\times10^{-30}$ | **6.10** [4.47, 8.32] |
+> | **2B** | Binary | Restricted | Paraphraser controls | 10,482 | 2,096 | 0.3453 | **+44.8939** | 1.7770 | 25.26 | $7.97\times10^{-141}$ | **89.07** [62.87, 126.18] |
+> | **2B-WFE** | Binary | Restricted | + Writer FE | 10,482 | 2,096 | 0.4686 | **+17.8342** | 1.8805 | 9.48 | $2.46\times10^{-21}$ | **5.95** [4.12, 8.60] |
 >
-> **Binary within-class diagnostics:** AI-only ORs are **8.21** (full, $N=10,774$) and **19.83** (restricted, $N=8,998$); Human-only ORs are **2.98** (full, $N=1,795$) and **3.49** (restricted, $N=1,499$). Human BERTScore is lower (0.8585) and Human binary accuracy is 45.85%, versus 96.3% for AI, so the pooled binary baseline is partly separating Human from AI.
+> **Binary within-class diagnostics:** the AI-only models are **quasi-separated and do not converge** (`mle_retvals['converged'] = False`); their point estimates are retained only in `T6_within_class_diagnostics.csv` with `Converged=False` / `Reported=False`, not interpreted. Human-only estimates are converged: extended-pool $\beta=+11.3245$ (SE 1.7892, OR **3.10** [2.19, 4.41], $N=1,795$, $G=579$); restricted $\beta=+12.4944$ (SE 1.9940, OR **3.49** [2.36, 5.16], $N=1,499$, $G=299$). Human-only binary accuracy is **45.85%**, below chance, versus 96.3% for AI rows; the pooled binary baseline is partly separating Human from AI.
 >
-> *(Reference: paraphraser = `GPT-4o-mini`; writer FE = `GPT-4o`. BERTScore $\mu = 0.9081 \pm 0.0487$ overall; `Gemma-27B` $0.8370 \pm 0.0311$.)*
+> **Per-paraphraser slopes (fully interacted model, article-clustered SEs):**
+>
+> | Paraphraser | Multi-class $\beta$ | SE | Binary $\beta$ | SE |
+> |---|---|---|---|---|
+> | GPT-4o-mini | **+28.7430** | 2.4398 | **+99.8244** | 7.4442 |
+> | Gemma-2-9B | **-5.2645** | 2.1290 | **+23.3972** | 2.3440 |
+> | Gemma-27B | **-12.5733** | 2.1906 | **+21.3184** | 2.2844 |
+> | LLaMA-3 | **+21.4734** | 1.9690 | **+62.0006** | 3.5832 |
+> | Mistral-7B | **+14.0317** | 1.9261 | **+40.1554** | 2.6810 |
+> | Qwen-2-72B | **+8.8765** | 1.4868 | **+35.2996** | 2.6925 |
+> | **Joint Wald test of equal slopes** | — | — | **$p=4.49\times10^{-61}$** | **$p=1.26\times10^{-37}$** |
+>
+> Non-attractor paraphrasers have strongly positive multi-class slopes, while Gemma-2-9B (**-5.26**) and Gemma-27B (**-12.57**) have negative slopes. Higher-fidelity Gemma rewrites still collapse into the Gemma-2-9B attractor. Binary slopes remain positive for all paraphrasers.
+>
+> **Stacked interaction test (Gemma-27B vs the other five):**
+>
+> | Outcome | Specification | Interaction $\beta$ | Clustered SE | $z$ | $p$ |
+> |---|---|---|---|---|---|
+> | Multi-class | Pooled, no paraphraser controls | **-29.8417** | 2.3445 | -12.73 | $4.12\times10^{-37}$ |
+> | Multi-class | Paraphraser controls | **-26.2334** | 2.4106 | -10.88 | $1.40\times10^{-27}$ |
+> | Multi-class | Paraphraser controls + writer FE | **-36.0332** | 2.4020 | -15.00 | $7.22\times10^{-51}$ |
+> | Binary | Pooled, no paraphraser controls | **-16.8744** | 2.5592 | -6.59 | $4.29\times10^{-11}$ |
+> | Binary | Paraphraser controls | **-23.5755** | 2.8190 | -8.36 | $6.11\times10^{-17}$ |
+> | Binary | Paraphraser controls + writer FE | **-25.7111** | 2.7828 | -9.24 | $2.48\times10^{-20}$ |
+>
+> The previously reported independent-SE “regime invariance” test ($\Delta\beta=-4.25$, SE 1.44, $p=0.0032$; binary $-4.06$, SE 2.30, $p=0.078$) is **withdrawn**. It applied $\sqrt{SE_{\text{full}}^2 + SE_{\text{restricted}}^2}$ to nested estimates sharing most rows, which overstates the variance of the difference. The interaction model above is the valid test.
 >
 > ### Key Statistical Insights:
 > 1. **Positive association, not causal proof:** all specifications are significant ($p < 10^{-7}$), but the design is observational; BERTScore covaries with prompt difficulty, refusals, and writer identity.
-> 2. **Multi-class effect is modest:** baseline ORs are 2.60 (full) and 3.97 (restricted), pseudo $R^2$ 0.069/0.075. Writer FE raises the OR to 9.27/14.29 and pseudo $R^2$ to 0.31/0.29.
-> 3. **Huge binary ORs are confounded:** baseline ORs 53.43/80.18 collapse to 5.77/6.40 with writer FE. The earlier “3.3–3.9×” range is closest to the Human-only estimates (2.98–3.49); the pooled WFE is 5.77–6.40. The earlier multi-class WFE value “6.07×” is not reproduced; the corrected value is 9.27–14.29.
-> 4. **Regime invariance is false for multi-class:** full vs. restricted slopes differ by $-4.25$ (SE 1.44, $z=-2.94$, $p=0.0032$). Binary slopes do not differ significantly ($-4.06$, SE 2.30, $z=-1.76$, $p=0.078$). “Statistically identical” and “completely independent of Gemma-27B” are withdrawn.
-> - Output file: `results/phase3/T6_logistic_regression_bertscore.csv`; join/arithmetic summary: `results/phase3/T6_rebuild_summary.json`.
+> 2. **Multi-class effect is modest:** baseline ORs are 2.91 (extended) and 3.92 (restricted), pseudo $R^2$ 0.071/0.074. Writer FE raises the OR to 14.19/14.27 and pseudo $R^2$ to 0.32/0.29.
+> 3. **Huge binary ORs are confounded:** baseline ORs 58.29/89.07 collapse to 6.10/5.95 with writer FE. Human rows have lower BERTScore and only 45.85% binary accuracy versus 96.3% for AI. The defensible claim is the Human-only range of roughly 3.1–3.5×, not 50–90×. AI-only models are quasi-separated and not interpreted.
+> 4. **Slope heterogeneity is the robust finding:** equal slopes are rejected (multi-class joint Wald $p=4.49\times10^{-61}$; binary $p=1.26\times10^{-37}$). Gemini-family paraphrasers are negative for multi-class attribution; the other four are positive. This is consistent with, but does not itself test, the Task 2 attractor geometry.
+> 5. **Task separation:** Task 6 establishes a document-level BERTScore–correctness association and paraphraser-specific slope heterogeneity. It does **not** measure centroid geometry, feature-space collapse, or causal attribution. “Regime invariance” and “completely independent of Gemma-27B” are withdrawn.
+> - Output files: `results/phase3/T6_logistic_regression_bertscore.csv`, `results/phase3/T6_within_class_diagnostics.csv`, `results/phase3/T6_per_paraphraser_slopes.csv`, `results/phase3/T6_interaction_test.csv`, `results/phase3/T6_excluded_rows.csv`, `results/phase3/T6_rebuild_summary.json`.
 >
 > ---
 >
 > ### ملخص الانحدار اللوجستي على مستوى الوثيقة (Task 6 Summary)
-> 1. **تأكيد الارتباط إحصائياً على مستوى كل وثيقة (Document-Level):**
->    - تم الانتقال من 6 نقاط مجمعة إلى 12,569 وثيقة مع تصحيح الأخطاء المعيارية العنقودية (Clustered SEs) بحسب المقال الأصلي ($2,096$ عنقوداً فعلياً، وليس 2,097؛ الأخير كان أثراً لتجميع النصوص المفقودة في تجزئة `nan` واحدة). كما تم إصلاح خطأ محاذاة الصفوف القديم (42% من الأزواج كانت خاطئة) باستخدام مطابقة نصية دقيقة.
+> 1. **إعادة بناء الاقتران والاستبعاد الصريح:**
+>    - تم استبدال المحاذاة الموضعية القديمة بمطابقة دقيقة على `(Paraphrased_Text, Writer)`، مع إعادة بناء أزواج Gemma-27B عبر `task4b_gemma27b_match.py`. الملف الجديد يحتوي 2,094 زوجاً، ووسيط تشابه TF-IDF هو 0.6561 (0.0% أقل من 0.10)، بينما الملف القديم كان وسيطه 0.151 و34.4% من أزواجه أقل من 0.10.
+>    - تم استبعاد 18 صفاً كانت إشاراتها مفقودة أو خاطئة: 15 صفاً هي نصوص رفض/ميتا من ملفات الإعدادات الخمسة، و3 صفوف من Gemma-27B هي نصوص مقالات صحيحة لكن تعذّر مطابقة مراجعها الأصلية. لم يُعد استرجاع أي منها من كتلة كاتب أخرى.
+>    - بعد الاستبعاد: 12,551 صفاً، منها 12,549 بدرجة BERTScore صالحة. النظام المقيد (خمسة مولدات) يحتوي 10,482 صفاً و2,096 عنقوداً. النظام الموسع يحتوي 3,782 عنقوداً، ونسبة تداخل Gemma-27B مع بقية المجموعة 18.1% فقط، لذا يُسمى **تحليل حساسية لعينة موسعة** وليس مقارنة نظيفة.
+>    - BERTScore المصحح لمجموعة Gemma-27B هو **0.887848 ± 0.024727** (N=2,067)، وليس 0.837.
 > 2. **دلالة إحصائية واضحة لكنها ارتباطية وليست سببية:**
 >    - جميع النماذج موجبة ودالة ($p < 10^{-7}$)، لكن التصميم رصدي؛ درجة BERTScore تتغير مع صعوبة المقال وحالات الرفض/القطع وهوية الكاتب.
 > 3. **نسبة الأرجحية (Odds Ratio):**
->    - التنسيب متعدد الفئات: **2.60×** (الكامل) و**3.97×** (المقيد) لكل +0.1 BERTScore. إضافة تأثيرات الكاتب الثابتة ترفعها إلى 9.27×–14.29×.
->    - الكشف الثنائي: الأرقام الخام 53.43×–80.18× مضللة بسبب اختلاط Human/AI؛ تأثيرات الكاتب تخفضها إلى 5.77×–6.40×، والتقدير داخل فئة Human فقط هو 2.98×–3.49×. لا يصح الادعاء بأثر 40–80×.
-> 4. **ثبات النتائج مع وبدون Gemma-27B:**
->    - ليس ثابتاً للتنسيب متعدد الفئات: فرق الميل $-4.25$ (SE 1.44، $z=-2.94$، $p=0.0032$). أما الكشف الثنائي فالفرق غير دال ($p=0.078$). تم سحب عبارة «تطابق منهجي كامل».
-
----
-
+>    - التنسيب متعدد الفئات: **2.91×** (الموسع) و**3.92×** (المقيد) لكل +0.1 BERTScore. إضافة تأثيرات الكاتب الثابتة ترفعها إلى 14.19×–14.27×.
+>    - الكشف الثنائي: الأرقام الخام 58.29×–89.07× مضللة بسبب اختلاط Human/AI؛ تأثيرات الكاتب تخفضها إلى 5.95×–6.10×. تقديرات Human فقط هي 3.10×–3.49×. نماذج AI فقط **لم تتقارب** بسبب الفصل شبه التام، ولا تُفسَّر نقطياً. لا يصح الادعاء بأثر 40–90×.
+>    - دقة Human الثنائية 45.85% (أقل من الصدفة)، مقابل 96.3% للـ AI.
+> 4. **تباين الميل حسب المولد هو النتيجة الأقوى:**
+>    - اختبار والْد المشترك لمساواة الميول مرفوض: $p=4.49\times10^{-61}$ للتنسيب و$p=1.26\times10^{-37}$ للكشف.
+>    - ميول Gemma-2-9B وGemma-27B سالبة في التنسيب (−5.26 و−12.57)، بينما GPT-4o-mini وLLaMA-3 وMistral-7B وQwen-2-72B موجبة.
+> 5. **فصل المهام:** المهمة 6 تثبت ارتباطاً على مستوى الوثيقة وتبايناً في الميول، ولا تختبر هندسة الجاذب في المهمة 2. تم سحب عبارة «ثبات النظام» و«استقلال تام عن Gemma-27B».
 ## Action Checklist
 
-- [x] **Task 1**: Check availability of training checkpoints (`Gemma-2-9B`, `Mistral-7B`, `Llama-8B`, `Qwen-2-72B`, `GPT-4o`). Drop `Yi-Large`. Audit completed: zero CNN AI classes used the exact training checkpoint (`gpt-4o-mini` ≠ `gpt-4o`; all open-weight checkpoints retired/404; `Yi-Large` label populated by `deepseek-v4-pro`). Adopt supervisor contingency: report CNN as unseen-generator evaluation. Recorded above under Task 1.
-- [x] **Task 2**: Recompute centroids: (a) gain-weighted, (b) 20/23 handcrafted features. Audit 20 vs 23 feature count. Audit resolved (20 handcrafted + 768 BERT + 3 metadata = 791). Centroids converge directly to `Gemma-2-9B` under Option A and Option B, removing conflict. Recorded above under Task 2.
-- [x] **Task 3**: Audit & Remediation of RoBERTa translation set. Audit revealed 78.48% train-set leakage and untranslated text pipeline bug. Remediation executed: evaluated on genuine NLLB translated test split with 0% data leakage across all 5 seeds, yielding true verified metrics: **95.76% ± 2.03% Accuracy, 78.17% ± 10.90% Macro F1** in Setting A and **99.90% ± 0.09% Accuracy, 99.68% ± 0.29% Macro F1** in Setting B1 (Seed 42 Setting A: **98.20% Acc, 93.51% F1**). The leaked-set artifact is resolved; legitimate 1.0000 scores remain on five seed/setting rows. Recorded above under Task 3.
-- [x] **Task 4**: Compute correct vs wrong confidence means on 6-class model for Gemma-27B and Mistral-7B sets. Completed: removing Gemma-2-9B reduces pathological error overconfidence (conf on wrong drops from 0.90 to 0.61–0.70), restores a positive confidence gap (+0.1507 on Gemma-27B, +0.1482 on Mistral-7B), and cuts ECE by >50%. This is relative improvement, not calibration: Gemma-27B 6-class Brier 0.8980 is worse than uniform 0.8333, and 7-class matched accuracy 0.1340 is below chance. Recorded above under Task 4.
-- [x] **Task 5**: Clean / filter flagged rows (refusal, length < 200, truncations, duplicate prompt) + document Claude-3-Haiku exclusion. Completed: audit log saved to `results/phase3/T5_data_hygiene_audit.csv`, metric impact verified minimal ($\Delta \le 0.0064$), and Claude-3-Haiku exclusion rationale formally recorded. Recorded above under Task 5.
-- [x] **Task 6**: Fit logistic regressions ($Y \sim \text{BERTScore} + \text{Paraphraser}$, clustered SEs by original article) for attribution and detection, with and without Gemma-27B. Rebuilt with exact text+writer joins after finding a 42% positional misalignment in the original script. Completed: $N=12,569$, $G=2,096$; baseline ORs 2.60×–3.97× (multi) and 53.43×–80.18× (binary); writer-FE ORs 9.27×–14.29× (multi) and 5.77×–6.40× (binary); Human-only binary 2.98×–3.49×. Multi-class regime invariance is not supported ($p=0.0032$). Table saved to `results/phase3/T6_logistic_regression_bertscore.csv`. Recorded above under Task 6.
+- [x] **Task 1**: Check availability of training checkpoints (`Gemma-2-9B`, `Mistral-7B`, `Llama-8B`, `Qwen-2-72B`, `GPT-4o`). Drop/relabel `Yi-Large` (populated by `deepseek-v4-pro`). Audit completed: zero CNN AI classes used the exact training checkpoint; open-weight weights remain on Hugging Face, but legacy hosted endpoints return HTTP 404. Full local regeneration skipped for compute/time; endpoint snapshot retained. Adopt contingency: report CNN as **Unseen Corpus + Prompt + Generator Test**. 7-class clean 26.06%/19.28%; 6-class clean 30.22%/25.28%. Recorded above under Task 1.
+- [x] **Task 2**: Recompute centroids: (a) gain-weighted, (b) handcrafted features. Feature count resolved (20 handcrafted + 768 BERT + 3 metadata = 791 columns; 788-d model space). Option A places `Gemma-2-9B` closest; unweighted handcrafted Option B narrowly supports Gemma-2-9B on Gemma-27B, but weighted Option B gives a near-tie on the Gemma-2-9B set. “Unequivocally” withdrawn. Recorded above under Task 2.
+- [x] **Task 3**: Audit & remediation. Historical 1,729-row file is exact-string duplicate of training (1,729/1,729 exact matches; 78.48% train/val leakage). “1.0000 TF-IDF cosine” withdrawn. Remediated 667-row set: 0 exact matches; mean nearest-neighbour TF-IDF 0.6948, median 0.7165, max 0.9797 (`task3_667_leakage_audit.py`). Setting A raw accuracy 95.76% ± 2.03% but balanced accuracy **72.14% ± 11.41%** (612:55 imbalance; Human N=35–55 per seed); Setting B1 99.90% ± 0.09% / 99.68% ± 0.29%; B2 99.60% ± 0.55%. 667-row shallow baselines: formatting-only balanced 74.55%/72.78% Macro-F1; extended balanced 90.91%/90.91%; natural-imbalance accuracies 91.75% and 93.40% are inflated (balanced accuracy 50.00% and 60.00%). Recorded above under Task 3.
+- [x] **Task 4**: Compute correct vs wrong confidence means on 6-class model for Gemma-27B and Mistral-7B. Completed: removing Gemma-2-9B **substantially reduces** pathological error overconfidence (confidence on wrong drops from 0.90 to 0.61–0.70; 29.1 and 16.2 percentage points, or -32.2% and -18.7% relative), restores a positive confidence gap (+0.1507, +0.1482), and cuts ECE by >50%. Not calibration: Gemma-27B 6-class Brier 0.8980 is worse than uniform 0.8333, and 7-class matched accuracy 0.1340 is below chance. Recorded above under Task 4.
+- [x] **Task 5**: Clean/filter flagged rows + document Claude-3-Haiku exclusion. Completed: row 474 is one of the 53 LLaMA short rows; 65 total rows dropped (57 short + 8 duplicate-prompt). Largest metric shift is multi-class Macro-F1 **-0.0063**; all other shifts satisfy $|\Delta| \le 0.0050$. Claude-3-Haiku exclusion rationale recorded. Recorded above under Task 5.
+- [x] **Task 6**: Fit clustered logistic regressions for attribution and detection, with and without Gemma-27B. Rebuilt with exact text+writer joins; 18 rows explicitly dropped (15 five-config meta-refusals + 3 unmatched Gemma-27B references); Gemma-27B rebuilt (median TF-IDF 0.656; BERTScore 0.887848 ± 0.024727). Completed: **N=12,551 retained / 12,549 valid**, restricted **10,482**, G=2,096 (extended G=3,782). Baseline ORs **2.91×/3.92×** (multi) and **58.29×/89.07×** (binary); writer-FE **14.19×/14.27×** (multi) and **6.10×/5.95×** (binary); Human-only binary **3.10×/3.49×**; AI-only non-converged and not interpreted. Independent-SE regime test withdrawn. Per-paraphraser slopes: GPT-4o-mini +28.74, Gemma-2-9B -5.26, Gemma-27B -12.57, LLaMA-3 +21.47, Mistral-7B +14.03, Qwen-2-72B +8.88 (joint Wald $p=4.49\times10^{-61}$); binary joint $p=1.26\times10^{-37}$. Recorded above under Task 6.
 
 ---
 

@@ -1,0 +1,23 @@
+{
+  "n_test_rows": 667,
+  "n_train_rows": 51181,
+  "n_exact_string_matches": 0,
+  "tfidf_config": {
+    "stop_words": "english",
+    "ngram_range": [
+      1,
+      2
+    ],
+    "min_df": 2,
+    "max_features": 50000,
+    "fit": "combined train + test corpus"
+  },
+  "nearest_neighbour_cosine": {
+    "mean": 0.6948,
+    "median": 0.7165,
+    "max": 0.9797,
+    "min": 0.1373,
+    "n_at_or_above_0_99": 0,
+    "n_at_or_above_0_95": 1
+  }
+}

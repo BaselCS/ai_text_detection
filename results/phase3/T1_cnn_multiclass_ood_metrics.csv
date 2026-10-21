@@ -1,0 +1,5 @@
+Evaluation,Split,N,Classes,Accuracy,Macro_Precision,Macro_Recall,Macro_F1,Class_List
+7-class (deepseek-v4-pro class),raw,6999,7,0.2656,0.1995,0.2656,0.1992,GPT-4o; Gemma-2-9B; Human; Llama-8B; Mistral-7B; Qwen-2-72B; deepseek-v4-pro
+7-class (deepseek-v4-pro class),clean,6935,7,0.2606,0.1921,0.26,0.1928,GPT-4o; Gemma-2-9B; Human; Llama-8B; Mistral-7B; Qwen-2-72B; deepseek-v4-pro
+6-class (deepseek-v4-pro dropped),raw,6000,6,0.308,0.282,0.308,0.2601,GPT-4o; Gemma-2-9B; Human; Llama-8B; Mistral-7B; Qwen-2-72B
+6-class (deepseek-v4-pro dropped),clean,5939,6,0.3022,0.2739,0.3013,0.2528,GPT-4o; Gemma-2-9B; Human; Llama-8B; Mistral-7B; Qwen-2-72B
