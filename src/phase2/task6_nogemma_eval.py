@@ -21,7 +21,11 @@ print("classes:", list(le.classes_))
 
 
 def predict(df):
-    X = df.reindex(columns=features, fill_value=0).astype("float32")
+    missing = [f for f in features if f not in df.columns]
+    if missing:
+        raise ValueError(f"{len(missing)} missing feature column(s) {missing[:8]}. "
+                         "Regenerate the processed file; do not zero-fill.")
+    X = df[features].astype("float32")
     return model.predict(pd.DataFrame(sc.transform(X).astype("float32"), columns=features))
 
 

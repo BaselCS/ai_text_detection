@@ -123,8 +123,12 @@ def main():
                 y_true_str = sub_df["Writer"].values
                 y_true_idx = le.transform(y_true_str)
 
-                # Preprocess features
-                X_df = sub_df.reindex(columns=features, fill_value=0).astype("float32")
+                # Preprocess features (strict schema: raise, never zero-fill)
+                missing = [f for f in features if f not in sub_df.columns]
+                if missing:
+                    raise ValueError(f"{model_name}: {len(missing)} missing feature column(s) "
+                                     f"{missing[:8]}. Regenerate the processed file; do not zero-fill.")
+                X_df = sub_df[features].astype("float32")
                 X_scaled = pd.DataFrame(sc.transform(X_df).astype("float32"), columns=features)
 
                 # Inference

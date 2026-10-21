@@ -1,9 +1,9 @@
 Model_Key,Model,Regime,Specification,Dependent_Variable,N_Observations,N_Clusters,Converged,Pseudo_R2,BERTScore_Beta,Clustered_SE,z_statistic,p_value,Odds_Ratio_per_0.1,Beta_CI_Lower,Beta_CI_Upper,OR_CI_Lower,OR_CI_Upper
-1A,Extended-Pool Sensitivity | Multi-Class | Paraphraser controls,Extended-Pool Sensitivity,Paraphraser controls,multi_correct,12549,3782,True,0.0706,10.6932,0.9794,10.92,9.41952354252382e-28,2.91,8.7736,12.6127,2.4,3.53
-1A-WFE,Extended-Pool Sensitivity | Multi-Class | + Writer FE,Extended-Pool Sensitivity,Writer FE,multi_correct,12549,3782,True,0.3171,26.5219,1.4249,18.61,2.514507166623065e-77,14.19,23.7291,29.3146,10.73,18.76
-1B,Restricted (5 paraphrasers) | Multi-Class | Paraphraser controls,Restricted,Paraphraser controls,multi_correct,10482,2096,True,0.0737,13.6601,1.1394,11.99,4.088188241601771e-33,3.92,11.4268,15.8934,3.14,4.9
-1B-WFE,Restricted (5 paraphrasers) | Multi-Class | + Writer FE,Restricted,Writer FE,multi_correct,10482,2096,True,0.2883,26.5795,1.5767,16.86,9.176306324316273e-64,14.27,23.4893,29.6697,10.47,19.43
-2A,Extended-Pool Sensitivity | Binary | Paraphraser controls,Extended-Pool Sensitivity,Paraphraser controls,binary_correct,12549,3782,True,0.2844,40.6549,1.3911,29.22,9.336706948367377e-188,58.29,37.9284,43.3814,44.38,76.57
-2A-WFE,Extended-Pool Sensitivity | Binary | + Writer FE,Extended-Pool Sensitivity,Writer FE,binary_correct,12549,3782,True,0.3823,18.0784,1.5849,11.41,3.866550216104893e-30,6.1,14.9721,21.1847,4.47,8.32
-2B,Restricted (5 paraphrasers) | Binary | Paraphraser controls,Restricted,Paraphraser controls,binary_correct,10482,2096,True,0.3453,44.8939,1.777,25.26,7.974528116994728e-141,89.07,41.4111,48.3768,62.87,126.18
-2B-WFE,Restricted (5 paraphrasers) | Binary | + Writer FE,Restricted,Writer FE,binary_correct,10482,2096,True,0.4686,17.8342,1.8805,9.48,2.4560278826686882e-21,5.95,14.1484,21.52,4.12,8.6
+1A,Extended-Pool Sensitivity | Multi-Class | Paraphraser controls,Extended-Pool Sensitivity,Paraphraser controls,multi_correct,12549,3782,True,0.065,7.3952,0.9689,7.63,2.3051607138353033e-14,2.09,5.4961,9.2942,1.73,2.53
+1A-WFE,Extended-Pool Sensitivity | Multi-Class | + Writer FE,Extended-Pool Sensitivity,Writer FE,multi_correct,12549,3782,True,0.3831,31.5501,1.7087,18.46,3.991271517581951e-76,23.45,28.2011,34.899,16.78,32.78
+1B,Restricted (5 paraphrasers) | Multi-Class | Paraphraser controls,Restricted,Paraphraser controls,multi_correct,10482,2096,True,0.0634,9.7031,1.0986,8.83,1.0249996566449138e-18,2.64,7.5499,11.8563,2.13,3.27
+1B-WFE,Restricted (5 paraphrasers) | Multi-Class | + Writer FE,Restricted,Writer FE,multi_correct,10482,2096,True,0.3562,32.1942,1.9158,16.8,2.2584812349680972e-63,25.01,28.4393,35.9491,17.18,36.41
+2A,Extended-Pool Sensitivity | Binary | Paraphraser controls,Extended-Pool Sensitivity,Paraphraser controls,binary_correct,12549,3782,True,0.254,35.845,1.294,27.7,6.635520399168022e-169,36.04,33.3088,38.3811,27.96,46.44
+2A-WFE,Extended-Pool Sensitivity | Binary | + Writer FE,Extended-Pool Sensitivity,Writer FE,binary_correct,12549,3782,True,0.3212,18.8629,1.6314,11.56,6.395952541704776e-31,6.59,15.6654,22.0604,4.79,9.08
+2B,Restricted (5 paraphrasers) | Binary | Paraphraser controls,Restricted,Paraphraser controls,binary_correct,10482,2096,True,0.3074,38.6138,1.5732,24.54,4.927824984178762e-133,47.53,35.5304,41.6972,34.92,64.7
+2B-WFE,Restricted (5 paraphrasers) | Binary | + Writer FE,Restricted,Writer FE,binary_correct,10482,2096,True,0.388,18.7212,1.888,9.92,3.55596041847398e-23,6.5,15.0207,22.4217,4.49,9.41

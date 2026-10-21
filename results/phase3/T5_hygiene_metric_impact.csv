@@ -1,0 +1,5 @@
+Task,Metric,Raw_N,Clean_N,Raw_Value,Clean_Value,Delta
+Binary,Accuracy,7999,7934,0.8466,0.8469,0.0003
+Binary,Macro_F1,7999,7934,0.7014,0.7027,0.0013
+Multi-Class,Accuracy,6999,6935,0.2656,0.2606,-0.005
+Multi-Class,Macro_F1,6999,6935,0.1992,0.1928,-0.0064

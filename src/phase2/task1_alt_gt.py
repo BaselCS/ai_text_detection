@@ -19,6 +19,17 @@ CONFIGS = [
 
 with open(f"{MODEL_DIR}/Bin_BERT_features.json") as f:
     features = json.load(f)
+
+def _assert_schema(df, features, name):
+    """Fail loudly on missing features instead of zero-filling them."""
+    missing = [f for f in features if f not in df.columns]
+    if missing:
+        raise ValueError(
+            f"{name}: missing {len(missing)} feature(s) {missing}. "
+            "Regenerate the processed file; do not zero-fill."
+        )
+    return df[features]
+
 mul_model = joblib.load(f"{MODEL_DIR}/Multi_BERT_model.joblib")
 mul_scaler = joblib.load(f"{MODEL_DIR}/Multi_BERT_scaler.joblib")
 le = joblib.load(f"{MODEL_DIR}/Multi_BERT_label_encoder.joblib")
@@ -32,7 +43,7 @@ for pname, csv, alt_class in CONFIGS:
     dfm = df[df["Writer"].isin(classes)].copy()
     dropped = len(df) - len(dfm)
     y_orig = le.transform(dfm["Writer"])
-    X = dfm.reindex(columns=features, fill_value=0).astype("float32")
+    X = _assert_schema(dfm, features, csv).astype("float32")
     Xs = pd.DataFrame(mul_scaler.transform(X).astype("float32"), columns=features)
     y_pred = mul_model.predict(Xs)
 
@@ -80,7 +91,7 @@ for pname, csv, alt_class in CONFIGS:
     df = pd.read_csv(csv, low_memory=True)
     dfm = df[(df["Writer"].isin(classes)) & (df["Writer"] != "Human")].copy()
     y_orig = le.transform(dfm["Writer"])
-    X = dfm.reindex(columns=features, fill_value=0).astype("float32")
+    X = _assert_schema(dfm, features, csv).astype("float32")
     Xs = pd.DataFrame(mul_scaler.transform(X).astype("float32"), columns=features)
     y_pred = mul_model.predict(Xs)
     acc_o = accuracy_score(y_orig, y_pred)

@@ -1,0 +1,7 @@
+Dataset,Model,Evaluation_Subset,N_samples,Accuracy,Chance_Accuracy,Accuracy_Above_Chance,Brier_Score,Uniform_Forecast_Brier,Brier_Skill_Score,ECE_10bin,Worse_Than_Uniform_Brier
+Gemma-27B,6-Class (No-Gemma),scorable_6class,1776,0.3468,0.1667,0.1801,0.898,0.8333,-0.0776,0.3183,True
+Gemma-27B,7-Class Baseline (Matched Samples),scorable_6class,1776,0.134,0.1429,-0.0089,1.574,0.8571,-0.8363,0.7666,True
+Gemma-27B,7-Class Baseline (Full Set),full_7class,2072,0.2457,0.1429,0.1028,1.3691,0.8571,-0.5973,0.6552,True
+Mistral-7B,6-Class (No-Gemma),scorable_6class,1800,0.4983,0.1667,0.3316,0.747,0.8333,0.1036,0.281,False
+Mistral-7B,7-Class Baseline (Matched Samples),scorable_6class,1800,0.3144,0.1429,0.1715,1.1929,0.8571,-0.3917,0.5538,True
+Mistral-7B,7-Class Baseline (Full Set),full_7class,2100,0.41,0.1429,0.2671,1.0253,0.8571,-0.1962,0.4741,True

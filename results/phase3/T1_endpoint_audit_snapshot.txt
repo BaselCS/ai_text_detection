@@ -1,8 +1,8 @@
-Task 1 endpoint audit snapshot
-Generated: 2026-10-21T09:54:23Z
+Task 1 endpoint / checkpoint audit snapshot
+Generated: 2026-10-21T14:06:20Z
 
 === OpenRouter public model catalogue query ===
-Total models: 468
+HTTP 200; total models: 468
 
 --- GEMMA (8 models) ---
   google/gemma-2-27b-it
@@ -21,6 +21,8 @@ Total models: 468
   meta-llama/llama-3.2-1b-instruct
   meta-llama/llama-3.2-3b-instruct
   meta-llama/llama-3.3-70b-instruct
+  meta-llama/llama-4-maverick
+  meta-llama/llama-4-scout
   meta-llama/llama-guard-4-12b
   nousresearch/hermes-3-llama-3.1-405b
   nousresearch/hermes-3-llama-3.1-70b
@@ -34,15 +36,18 @@ Total models: 468
   mistralai/ministral-3b-2512
   mistralai/ministral-8b-2512
   mistralai/ministral-8b-2512:batch
+  mistralai/mistral-large
   mistralai/mistral-large-2407
   mistralai/mistral-large-2512
   mistralai/mistral-large-2512:batch
+  mistralai/mistral-large-4-0
   mistralai/mistral-medium-3
   mistralai/mistral-medium-3-5
   mistralai/mistral-medium-3-5:batch
   mistralai/mistral-medium-3.1
   mistralai/mistral-medium-3.1:batch
   mistralai/mistral-nemo
+  mistralai/mistral-saba
   mistralai/mistral-small-24b-instruct-2501
   mistralai/mistral-small-2603
   mistralai/mistral-small-2603:batch
@@ -55,6 +60,7 @@ Total models: 468
   qwen/qwen-2.5-72b-instruct
   qwen/qwen-2.5-7b-instruct
   qwen/qwen-2.5-coder-32b-instruct
+  qwen/qwen-plus
   qwen/qwen2.5-vl-72b-instruct
   qwen/qwen3-14b
   qwen/qwen3-235b-a22b-2507
@@ -97,16 +103,24 @@ Total models: 468
 
 --- YI (0 models) ---
 
-=== Hosted endpoint availability probes ===
-[FAIL 404] qwen_2_72b (qwen/qwen-2-72b-instruct): No endpoints found for qwen/qwen-2-72b-instruct.
-[FAIL 404] gemma_2_9b (google/gemma-2-9b-it): No endpoints found for google/gemma-2-9b-it.
-[FAIL 404] llama_3_8b (meta-llama/llama-3-8b-instruct): No endpoints found for meta-llama/llama-3-8b-instruct.
-[FAIL 404] mistral_7b (mistralai/mistral-7b-instruct): No endpoints found for mistralai/mistral-7b-instruct.
-[OK] gpt-4o (gpt-4o): On Thursday, federal regulators revealed updated safety stan...
+=== OpenRouter endpoint availability probes ===
+An endpoint count of 0 means the model id is catalogued but served
+by no provider; the legacy hosted route is therefore unavailable.
+[NO ENDPOINTS] qwen_2_72b         qwen/qwen-2-72b-instruct               HTTP 200 endpoints=0 providers=[]
+[NO ENDPOINTS] gemma_2_9b         google/gemma-2-9b-it                   HTTP 200 endpoints=0 providers=[]
+[NO ENDPOINTS] llama_3_8b         meta-llama/llama-3-8b-instruct         HTTP 200 endpoints=0 providers=[]
+[NO ENDPOINTS] mistral_7b_v0.3    mistralai/mistral-7b-instruct-v0.3     HTTP 200 endpoints=0 providers=[]
+[NO ENDPOINTS] mistral_7b_legacy  mistralai/mistral-7b-instruct          HTTP 200 endpoints=0 providers=[]
+[NO ENDPOINTS] yi_large           01-ai/yi-large                         HTTP 200 endpoints=0 providers=[]
+[AVAILABLE] gpt_4o             openai/gpt-4o                          HTTP 200 endpoints=2 providers=['Azure', 'OpenAI']
 
---- Summary ---
-gemma_2_9b      | google/gemma-2-9b-it                | FAILED (HTTP 404: No endpoints found for google/gemma-2-9b-it.)
-llama_3_8b      | meta-llama/llama-3-8b-instruct      | FAILED (HTTP 404: No endpoints found for meta-llama/llama-3-8b-instruct.)
-mistral_7b      | mistralai/mistral-7b-instruct       | FAILED (HTTP 404: No endpoints found for mistralai/mistral-7b-instruct.)
-qwen_2_72b      | qwen/qwen-2-72b-instruct            | FAILED (HTTP 404: No endpoints found for qwen/qwen-2-72b-instruct.)
-gpt-4o          | gpt-4o                              | AVAILABLE
+=== Hugging Face model-card availability ===
+Open-weight repositories are checked directly; `gated` repos are
+publicly downloadable after accepting the licence on the model card.
+[HTTP 200] Gemma-2-9B slot    google/gemma-2-9b-it                   gated=manual private=False lastModified=2024-08-27T19:41:49.000Z downloads=682640
+[HTTP 200] Llama-8B slot      meta-llama/Meta-Llama-3-8B-Instruct    gated=manual private=False lastModified=2025-06-18T23:49:51.000Z downloads=429637
+[HTTP 200] Mistral-7B slot    mistralai/Mistral-7B-Instruct-v0.3     gated=False private=False lastModified=2025-12-03T12:13:48.000Z downloads=1844442
+[HTTP 200] Qwen-2-72B slot    Qwen/Qwen2-72B-Instruct                gated=False private=False lastModified=2024-10-08T05:16:14.000Z downloads=22946
+
+Note: gpt-4o is a proprietary OpenAI checkpoint and has no open weights;
+the CNN corpus used gpt-4o-mini, which is a different OpenAI checkpoint.

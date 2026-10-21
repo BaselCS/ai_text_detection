@@ -4,10 +4,13 @@ Task 3 Remediation: Fix Data Leakage and Evaluate RoBERTa on Genuine NLLB Transl
 Steps:
 1. Locate genuine NLLB-200 round-trip translation outputs in archive/legacy/old_things/paraphrasing/nllb/with_semantic_similarity.csv.
 2. Verify text differs from clean articles (assert TF-IDF cosine similarity < 1.0 and pairwise string mismatch).
-3. Filter strictly for held-out test split (0% train/val overlap guaranteed).
+3. Filter strictly for held-out test split and drop any test row whose source
+   text also occurs in train/val (0 source-text and 0 index overlap).
 4. Save clean evaluation dataset to results/phase3/T3_true_test_translated.csv.
 5. Re-evaluate RoBERTa binary models (Seed 42 and all 5 seeds) on genuine translated test split.
-6. Save results to results/phase3/T3_roberta_true_translation_metrics.csv.
+6. Save diagnostic per-seed results to
+   results/phase3/T3_roberta_true_translation_metrics_remediation.csv.  The
+   canonical 5-seed Setting A/B1/B2 table is written by task3_dual_settings.py.
 """
 
 import os
@@ -60,6 +63,15 @@ def get_splits_for_seed(df_articles: pd.DataFrame, seed: int):
         stratify=train_val_df["is_AI"].astype(int)
     )
     return set(train_df.index), set(val_df.index), set(test_df.index)
+
+
+def drop_cross_split_source_duplicates(test_df: pd.DataFrame, articles: pd.DataFrame,
+                                       train_idx: set, val_idx: set) -> pd.DataFrame:
+    """Drop test rows whose pre-NLLB source text occurs in train/val."""
+    train_texts = set(articles.loc[list(train_idx), "Text"].astype(str))
+    val_texts = set(articles.loc[list(val_idx), "Text"].astype(str))
+    overlap = test_df["Text"].astype(str).isin(train_texts | val_texts)
+    return test_df.loc[~overlap].copy().reset_index(drop=True)
 
 
 def chunk_text_by_tokens(text: str, tokenizer, max_length: int = 512, overlap: int = 64):
@@ -165,7 +177,9 @@ def main():
     
     # Frozen duplicate-text rule: last occurrence wins, matching the historical
     # NLLB evaluation archive and task3_leakage_audit.py.  Do not replace with a
-    # first-occurrence setdefault; that changes the 667/580/610/615/588 Ns.
+    # first-occurrence setdefault; that changes the pre-dedup 667/580/610/615/588
+    # Ns.  After source-text deduplication the evaluation Ns are
+    # 666/579/610/615/586.
     text_to_idx = {}
     for idx, text in enumerate(df_articles["Text"]):
         text_to_idx[text] = idx
@@ -192,10 +206,15 @@ def main():
     s42_train, s42_val, s42_test = seed_splits[42]
     
     df_s42_test = matched_df[matched_df["orig_idx"].isin(s42_test)].copy()
-    # Explicitly check for zero leakage
+    df_s42_test = drop_cross_split_source_duplicates(df_s42_test, df_articles, s42_train, s42_val)
+    # Explicitly check for zero index and source-text leakage
     leakage_train = df_s42_test["orig_idx"].isin(s42_train).sum()
     leakage_val = df_s42_test["orig_idx"].isin(s42_val).sum()
-    assert leakage_train == 0 and leakage_val == 0, "FATAL: Train/Val leakage detected!"
+    s42_train_texts = set(df_articles.loc[list(s42_train), "Text"].astype(str))
+    s42_val_texts = set(df_articles.loc[list(s42_val), "Text"].astype(str))
+    text_leakage = df_s42_test["Text"].astype(str).isin(s42_train_texts | s42_val_texts).sum()
+    assert leakage_train == 0 and leakage_val == 0 and text_leakage == 0, \
+        "FATAL: Train/Val index or source-text leakage detected!"
     print(f"  [Zero Leakage Verified] Seed 42 genuine test translated samples: {len(df_s42_test)}")
     print(f"  Class balance: Human={sum(df_s42_test['is_AI'] == 0)}, AI={sum(df_s42_test['is_AI'] == 1)}")
 
@@ -232,8 +251,14 @@ def main():
         # Get the seed-specific strict test set
         s_train, s_val, s_test = seed_splits[s]
         seed_test_df = matched_df[matched_df["orig_idx"].isin(s_test)].copy()
+        seed_test_df = drop_cross_split_source_duplicates(seed_test_df, df_articles, s_train, s_val)
         assert seed_test_df["orig_idx"].isin(s_train).sum() == 0, f"Leakage detected in seed {s}!"
-        
+        assert seed_test_df["orig_idx"].isin(s_val).sum() == 0, f"Val leakage detected in seed {s}!"
+        train_texts = set(df_articles.loc[list(s_train), "Text"].astype(str))
+        val_texts = set(df_articles.loc[list(s_val), "Text"].astype(str))
+        assert not seed_test_df["Text"].astype(str).isin(train_texts | val_texts).any(), \
+            f"Source-text leakage detected in seed {s}!"
+
         eval_seed_df = pd.DataFrame({
             "Text": seed_test_df["paraphrased_text"],
             "label": seed_test_df["is_AI"]
@@ -272,9 +297,9 @@ def main():
     print(f"  Accuracy: {np.mean(accs):.4f} +/- {np.std(accs):.4f}")
     print(f"  Macro F1: {np.mean(f1s):.4f} +/- {np.std(f1s):.4f}")
 
-    metrics_csv = "results/phase3/T3_roberta_true_translation_metrics.csv"
+    metrics_csv = "results/phase3/T3_roberta_true_translation_metrics_remediation.csv"
     df_results.to_csv(metrics_csv, index=False)
-    print(f"\nSaved metrics summary to: {metrics_csv}")
+    print(f"\nSaved diagnostic per-seed metrics to: {metrics_csv}")
 
 
 if __name__ == "__main__":

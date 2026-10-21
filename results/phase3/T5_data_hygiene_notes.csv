@@ -1,0 +1,2 @@
+Writer,Raw_Row,Category,Issue_Description,Included_In_Clean_Filter
+Yi-Large (source: deepseek_pro),915,"Source-level truncation, not present in processed corpus","Raw deepseek_pro row 915 is 'READING,' (8 chars), but processed Yi-Large has 999 rows and does not contain it.",No

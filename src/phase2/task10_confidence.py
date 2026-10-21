@@ -7,6 +7,17 @@ import pandas as pd
 
 with open("results/models/Bin_BERT_features.json") as f:
     features = json.load(f)
+
+def _assert_schema(df, features, name):
+    """Fail loudly on missing features instead of zero-filling them."""
+    missing = [f for f in features if f not in df.columns]
+    if missing:
+        raise ValueError(
+            f"{name}: missing {len(missing)} feature(s) {missing}. "
+            "Regenerate the processed file; do not zero-fill."
+        )
+    return df[features]
+
 model = joblib.load("results/models/Multi_BERT_model.joblib")
 sc = joblib.load("results/models/Multi_BERT_scaler.joblib")
 le = joblib.load("results/models/Multi_BERT_label_encoder.joblib")
@@ -24,7 +35,7 @@ for sname, csv in SETS.items():
     df = pd.read_csv(csv, low_memory=True)
     df = df[df["Writer"].isin(le.classes_)].copy()
     yt = le.transform(df["Writer"])
-    X = pd.DataFrame(sc.transform(df.reindex(columns=features, fill_value=0).astype("float32")).astype("float32"), columns=features)
+    X = pd.DataFrame(sc.transform(_assert_schema(df, features, csv).astype("float32")).astype("float32"), columns=features)
     proba = model.predict_proba(X)
     conf = proba.max(axis=1)
     pred = proba.argmax(axis=1)

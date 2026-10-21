@@ -15,6 +15,50 @@ import joblib
 import numpy as np
 import pandas as pd
 
+FEATURES_JSON = "results/models/Bin_BERT_features.json"
+MULTI_METADATA = "results/models/Multi_BERT_metadata.json"
+
+
+def load_features():
+    """Feature list for the Multi_BERT model, taken from its own metadata.
+
+    The binary list is asserted to be identical so that a future retrain of
+    either model cannot silently desynchronise this analysis.
+    """
+    with open(FEATURES_JSON) as f:
+        bin_features = json.load(f)
+    with open(MULTI_METADATA) as f:
+        multi_features = json.load(f)["feature_list"]
+    if bin_features != multi_features:
+        raise AssertionError(
+            "Feature lists differ between Bin_BERT_features.json and "
+            "Multi_BERT_metadata.json; the centroid space is ambiguous."
+        )
+    return multi_features
+
+
+def assert_schema(df, features, name):
+    """Fail loudly on a missing feature column instead of zero-filling it.
+
+    Zero-filling before StandardScaler does not produce a neutral value: it
+    maps every absent column to (0 - mean) / scale, a systematic offset shared
+    by every row of that writer.
+    """
+    missing = [f for f in features if f not in df.columns]
+    if missing:
+        raise ValueError(
+            f"{name}: missing {len(missing)} model feature(s): {missing}. "
+            "Regenerate the processed file; do not zero-fill."
+        )
+    return df[features]
+
+
+def add_sample_size(df, sizes):
+    out = df.copy()
+    out.insert(1, "N_Samples", out["Paraphrased_set"].map(sizes))
+    return out
+
+
 def get_gain_weights(model, feature_names):
     booster = model.get_booster()
     score_gain = booster.get_score(importance_type="gain")
@@ -97,11 +141,10 @@ def compute_distances(train_centroids, para_centroids, weights, dims_slice=None,
 
 def main():
     os.makedirs("results/phase3", exist_ok=True)
-    
+
     # 1. Feature audit
-    with open("results/models/Bin_BERT_features.json") as f:
-        features = json.load(f)
-        
+    features = load_features()
+
     handcrafted = [f for f in features if not f.startswith("bert_")]
     bert_features = [f for f in features if f.startswith("bert_")]
     
@@ -158,11 +201,14 @@ def main():
     }
     
     para_c = {}
+    para_n = {}
     for sname, csv in SETS.items():
         df = pd.read_csv(csv, low_memory=True)
-        df = df.reindex(columns=features, fill_value=0)
-        c = scaler.transform(df.astype("float32")).astype(np.float64).mean(axis=0)
+        X = assert_schema(df, features, csv)
+        para_n[sname] = int(len(df))
+        c = scaler.transform(X.astype("float32")).astype(np.float64).mean(axis=0)
         para_c[sname] = c
+        print(f"  [centroid] {sname:12s} N={para_n[sname]:,}")
         
     # 4. Compute configurations
     # Config 0: Baseline unweighted 788-d
@@ -170,17 +216,23 @@ def main():
     
     # Config A: Option A - Gain-weighted 788-d
     df_optA_e, df_optA_c = compute_distances(train_c, para_c, weights=norm_weights, alt_map=ALT)
+    df_optA_e = add_sample_size(df_optA_e, para_n)
+    df_optA_c = add_sample_size(df_optA_c, para_n)
     df_optA_e.to_csv("results/phase3/T2_Centroid_OptionA_GainWeighted_Euclidean.csv", index=False)
     df_optA_c.to_csv("results/phase3/T2_Centroid_OptionA_GainWeighted_Cosine.csv", index=False)
-    
+
     # Config B: Option B - 20 Handcrafted features unweighted
     hc_slice = slice(0, len(handcrafted))
     df_optB_e, df_optB_c = compute_distances(train_c, para_c, weights=None, dims_slice=hc_slice, alt_map=ALT)
+    df_optB_e = add_sample_size(df_optB_e, para_n)
+    df_optB_c = add_sample_size(df_optB_c, para_n)
     df_optB_e.to_csv("results/phase3/T2_Centroid_OptionB_Handcrafted_Euclidean.csv", index=False)
     df_optB_c.to_csv("results/phase3/T2_Centroid_OptionB_Handcrafted_Cosine.csv", index=False)
-    
+
     # Config B-weighted: 20 Handcrafted features weighted by gain
     df_optBw_e, df_optBw_c = compute_distances(train_c, para_c, weights=norm_weights, dims_slice=hc_slice, alt_map=ALT)
+    df_optBw_e = add_sample_size(df_optBw_e, para_n)
+    df_optBw_c = add_sample_size(df_optBw_c, para_n)
     df_optBw_e.to_csv("results/phase3/T2_Centroid_OptionB_GainWeighted_Euclidean.csv", index=False)
     df_optBw_c.to_csv("results/phase3/T2_Centroid_OptionB_GainWeighted_Cosine.csv", index=False)
     

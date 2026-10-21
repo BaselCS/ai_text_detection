@@ -1,5 +1,5 @@
 Evaluation,Split,N,Classes,Accuracy,Macro_Precision,Macro_Recall,Macro_F1,Class_List
-7-class (deepseek-v4-pro class),raw,6999,7,0.2656,0.1995,0.2656,0.1992,GPT-4o; Gemma-2-9B; Human; Llama-8B; Mistral-7B; Qwen-2-72B; deepseek-v4-pro
-7-class (deepseek-v4-pro class),clean,6935,7,0.2606,0.1921,0.26,0.1928,GPT-4o; Gemma-2-9B; Human; Llama-8B; Mistral-7B; Qwen-2-72B; deepseek-v4-pro
-6-class (deepseek-v4-pro dropped),raw,6000,6,0.308,0.282,0.308,0.2601,GPT-4o; Gemma-2-9B; Human; Llama-8B; Mistral-7B; Qwen-2-72B
-6-class (deepseek-v4-pro dropped),clean,5939,6,0.3022,0.2739,0.3013,0.2528,GPT-4o; Gemma-2-9B; Human; Llama-8B; Mistral-7B; Qwen-2-72B
+7-class (deepseek-v4-pro class),raw,6999,7,0.2656,0.1995,0.2656,0.1992,gpt-4o-mini (GPT-4o slot); gemma-3-12b-it (Gemma-2-9B slot); Human; llama-3.1-8b (Llama-8B slot); mistral-nemo (Mistral-7B slot); qwen-2.5-72b (Qwen-2-72B slot); deepseek-v4-pro (Yi-Large slot)
+7-class (deepseek-v4-pro class),clean,6935,7,0.2606,0.1921,0.26,0.1928,gpt-4o-mini (GPT-4o slot); gemma-3-12b-it (Gemma-2-9B slot); Human; llama-3.1-8b (Llama-8B slot); mistral-nemo (Mistral-7B slot); qwen-2.5-72b (Qwen-2-72B slot); deepseek-v4-pro (Yi-Large slot)
+6-class (deepseek-v4-pro dropped),raw,6000,6,0.308,0.282,0.308,0.2601,gpt-4o-mini (GPT-4o slot); gemma-3-12b-it (Gemma-2-9B slot); Human; llama-3.1-8b (Llama-8B slot); mistral-nemo (Mistral-7B slot); qwen-2.5-72b (Qwen-2-72B slot)
+6-class (deepseek-v4-pro dropped),clean,5939,6,0.3022,0.2739,0.3013,0.2528,gpt-4o-mini (GPT-4o slot); gemma-3-12b-it (Gemma-2-9B slot); Human; llama-3.1-8b (Llama-8B slot); mistral-nemo (Mistral-7B slot); qwen-2.5-72b (Qwen-2-72B slot)

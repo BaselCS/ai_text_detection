@@ -17,7 +17,11 @@ for name, csv in [("Misspell_5%", "data/processed/processed_misspelled_5.csv"),
     df = pd.read_csv(csv, low_memory=True)
     dfm = df[df["Writer"].isin(classes)].copy()
     y_true = le.transform(dfm["Writer"])
-    X = dfm.reindex(columns=features, fill_value=0).astype("float32")
+    missing = [f for f in features if f not in dfm.columns]
+    if missing:
+        raise ValueError(f"{name}: {len(missing)} missing feature column(s) {missing[:8]}. "
+                         "Regenerate the processed file; do not zero-fill.")
+    X = dfm[features].astype("float32")
     Xs = pd.DataFrame(scaler.transform(X).astype("float32"), columns=features)
     y_pred = model.predict(Xs)
     cm = confusion_matrix(y_true, y_pred, labels=list(range(len(classes))))

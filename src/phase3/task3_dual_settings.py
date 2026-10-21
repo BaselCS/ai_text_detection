@@ -56,6 +56,23 @@ def get_splits_for_seed(df_articles: pd.DataFrame, seed: int):
     )
     return set(train_df.index), set(val_df.index), set(test_df.index)
 
+
+def drop_cross_split_source_duplicates(test_df: pd.DataFrame, articles: pd.DataFrame,
+                                       train_idx: set, val_idx: set) -> pd.DataFrame:
+    """Drop evaluation rows whose source text also occurs in train/val.
+
+    The corpus contains duplicate source articles.  A row-level split can place
+    one copy in train and another in test even when ``orig_idx`` itself is in
+    the test split.  Filtering on the source text as well as the mapped index
+    closes that leak.  This removes 1 row for seed 42, 1 for seed 123 and 2 for
+    seed 8080, giving N = 666, 579, 610, 615, 586.
+    """
+    train_texts = set(articles.loc[list(train_idx), "Text"].astype(str))
+    val_texts = set(articles.loc[list(val_idx), "Text"].astype(str))
+    seen = train_texts | val_texts
+    overlap = test_df["Text"].astype(str).isin(seen)
+    return test_df.loc[~overlap].copy().reset_index(drop=True)
+
 def chunk_text_by_tokens(text: str, tokenizer, max_length: int = 512, overlap: int = 64):
     chunk_size = max_length - 2
     stride = chunk_size - overlap
@@ -152,7 +169,27 @@ def run_dual_evaluation():
 
         s_train, s_val, s_test = seed_splits[s]
         seed_test_df = matched_df[matched_df["orig_idx"].isin(s_test)].copy().reset_index(drop=True)
+        seed_test_df = drop_cross_split_source_duplicates(seed_test_df, df_articles, s_train, s_val)
         assert seed_test_df["orig_idx"].isin(s_train).sum() == 0, f"Leakage detected in seed {s}!"
+        assert seed_test_df["orig_idx"].isin(s_val).sum() == 0, f"Val leakage detected in seed {s}!"
+        train_text_set = set(df_articles.loc[list(s_train), "Text"].astype(str))
+        val_text_set = set(df_articles.loc[list(s_val), "Text"].astype(str))
+        assert not seed_test_df["Text"].astype(str).isin(train_text_set | val_text_set).any(), \
+            f"Source-text leakage detected in seed {s}!"
+        print(f"Seed {s}: N={len(seed_test_df)} "
+              f"(Human={(seed_test_df['is_AI'] == 0).sum()}, AI={(seed_test_df['is_AI'] == 1).sum()})")
+
+        # Save the deduplicated Seed-42 evaluation set used by the leakage,
+        # surface-artifact, and shallow-baseline scripts.
+        if s == 42:
+            pd.DataFrame({
+                "Text": seed_test_df["paraphrased_text"],
+                "Writer": seed_test_df["Writer"],
+                "is_AI": seed_test_df["is_AI"],
+                "label": seed_test_df["is_AI"],
+                "original_text": seed_test_df["Text"],
+                "orig_idx": seed_test_df["orig_idx"],
+            }).to_csv("results/phase3/T3_true_test_translated.csv", index=False)
 
         # ---------------------------------------------------------------------
         # Setting A: Both Human & AI NLLB-translated

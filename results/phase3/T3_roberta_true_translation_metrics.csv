@@ -1,0 +1,16 @@
+Setting,Seed,N_Samples,N_Human,N_AI,Accuracy,Precision,Recall,Macro_F1,AI_Recall,Human_Recall,Confusion_Matrix,Evaluation_Notes
+Setting A: Both Human & AI NLLB-Translated,42,666,55,611,0.982,0.98,0.8992,0.9351,0.9984,0.8,"[[44, 11], [1, 610]]",Errors driven by False Positives on machine-translated Human text (RoBERTa detects NLLB neural signature)
+Setting B1: Standard Attack (Unperturbed Human vs NLLB AI),42,666,55,611,0.9985,0.9911,0.9992,0.9951,0.9984,1.0,"[[55, 0], [1, 610]]",Standard attack: Clean test Human articles vs NLLB-translated test AI articles
+Setting B2: Balanced 1:1 Standard Attack (50% Human : 50% NLLB AI),42,110,55,55,1.0,1.0,1.0,1.0,1.0,1.0,"[[55, 0], [0, 55]]",Balanced 1:1 evaluation (N_human == N_ai) under standard attack
+Setting A: Both Human & AI NLLB-Translated,123,579,47,532,0.9447,0.9716,0.6596,0.7273,1.0,0.3191,"[[15, 32], [0, 532]]",Errors driven by False Positives on machine-translated Human text (RoBERTa detects NLLB neural signature)
+Setting B1: Standard Attack (Unperturbed Human vs NLLB AI),123,579,47,532,0.9983,0.9991,0.9894,0.9942,1.0,0.9787,"[[46, 1], [0, 532]]",Standard attack: Clean test Human articles vs NLLB-translated test AI articles
+Setting B2: Balanced 1:1 Standard Attack (50% Human : 50% NLLB AI),123,94,47,47,0.9894,0.9896,0.9894,0.9894,1.0,0.9787,"[[46, 1], [0, 47]]",Balanced 1:1 evaluation (N_human == N_ai) under standard attack
+Setting A: Both Human & AI NLLB-Translated,999,610,35,575,0.9705,0.9848,0.7429,0.8192,1.0,0.4857,"[[17, 18], [0, 575]]",Errors driven by False Positives on machine-translated Human text (RoBERTa detects NLLB neural signature)
+Setting B1: Standard Attack (Unperturbed Human vs NLLB AI),999,610,35,575,1.0,1.0,1.0,1.0,1.0,1.0,"[[35, 0], [0, 575]]",Standard attack: Clean test Human articles vs NLLB-translated test AI articles
+Setting B2: Balanced 1:1 Standard Attack (50% Human : 50% NLLB AI),999,70,35,35,1.0,1.0,1.0,1.0,1.0,1.0,"[[35, 0], [0, 35]]",Balanced 1:1 evaluation (N_human == N_ai) under standard attack
+Setting A: Both Human & AI NLLB-Translated,2024,615,52,563,0.9317,0.9653,0.5962,0.6433,1.0,0.1923,"[[10, 42], [0, 563]]",Errors driven by False Positives on machine-translated Human text (RoBERTa detects NLLB neural signature)
+Setting B1: Standard Attack (Unperturbed Human vs NLLB AI),2024,615,52,563,0.9984,0.9991,0.9904,0.9947,1.0,0.9808,"[[51, 1], [0, 563]]",Standard attack: Clean test Human articles vs NLLB-translated test AI articles
+Setting B2: Balanced 1:1 Standard Attack (50% Human : 50% NLLB AI),2024,104,52,52,0.9904,0.9906,0.9904,0.9904,1.0,0.9808,"[[51, 1], [0, 52]]",Balanced 1:1 evaluation (N_human == N_ai) under standard attack
+Setting A: Both Human & AI NLLB-Translated,8080,586,38,548,0.9625,0.9807,0.7105,0.7865,1.0,0.4211,"[[16, 22], [0, 548]]",Errors driven by False Positives on machine-translated Human text (RoBERTa detects NLLB neural signature)
+Setting B1: Standard Attack (Unperturbed Human vs NLLB AI),8080,586,38,548,1.0,1.0,1.0,1.0,1.0,1.0,"[[38, 0], [0, 548]]",Standard attack: Clean test Human articles vs NLLB-translated test AI articles
+Setting B2: Balanced 1:1 Standard Attack (50% Human : 50% NLLB AI),8080,76,38,38,1.0,1.0,1.0,1.0,1.0,1.0,"[[38, 0], [0, 38]]",Balanced 1:1 evaluation (N_human == N_ai) under standard attack

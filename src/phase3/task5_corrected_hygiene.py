@@ -139,8 +139,15 @@ def run_task5_fix():
     le = joblib.load("results/models/Multi_BERT_label_encoder.joblib")
     valid_classes = list(le.classes_)
 
+    def _feat(df, label):
+        missing = [f for f in features if f not in df.columns]
+        if missing:
+            raise ValueError(f"{label}: {len(missing)} missing feature column(s) {missing[:8]}. "
+                             "Regenerate the processed file; do not zero-fill.")
+        return df[features].astype("float32")
+
     # 1. Raw evaluation (N=7999)
-    X_bin = df_proc.reindex(columns=features, fill_value=0).astype("float32")
+    X_bin = _feat(df_proc, "raw/binary")
     X_bin_sc = pd.DataFrame(bin_scaler.transform(X_bin).astype("float32"), columns=features)
     y_bin_pred = bin_model.predict(X_bin_sc)
     y_bin_true = df_proc["is_AI"]
@@ -148,7 +155,7 @@ def run_task5_fix():
     _, _, raw_bin_f1, _ = precision_recall_fscore_support(y_bin_true, y_bin_pred, average="macro", zero_division=0)
 
     df_multi_raw = df_proc[df_proc["Writer"].isin(valid_classes)].copy()
-    X_mul = df_multi_raw.reindex(columns=features, fill_value=0).astype("float32")
+    X_mul = _feat(df_multi_raw, "raw/multi")
     X_mul_sc = pd.DataFrame(mul_scaler.transform(X_mul).astype("float32"), columns=features)
     y_mul_pred = mul_model.predict(X_mul_sc)
     y_mul_true = le.transform(df_multi_raw["Writer"])
@@ -156,7 +163,7 @@ def run_task5_fix():
     _, _, raw_mul_f1, _ = precision_recall_fscore_support(y_mul_true, y_mul_pred, average="macro", zero_division=0)
 
     # 2. Clean evaluation (N=7934)
-    X_bin_c = df_clean.reindex(columns=features, fill_value=0).astype("float32")
+    X_bin_c = _feat(df_clean, "clean/binary")
     X_bin_sc_c = pd.DataFrame(bin_scaler.transform(X_bin_c).astype("float32"), columns=features)
     y_bin_pred_c = bin_model.predict(X_bin_sc_c)
     y_bin_true_c = df_clean["is_AI"]
@@ -164,7 +171,7 @@ def run_task5_fix():
     _, _, clean_bin_f1, _ = precision_recall_fscore_support(y_bin_true_c, y_bin_pred_c, average="macro", zero_division=0)
 
     df_multi_c = df_clean[df_clean["Writer"].isin(valid_classes)].copy()
-    X_mul_c = df_multi_c.reindex(columns=features, fill_value=0).astype("float32")
+    X_mul_c = _feat(df_multi_c, "clean/multi")
     X_mul_sc_c = pd.DataFrame(mul_scaler.transform(X_mul_c).astype("float32"), columns=features)
     y_mul_pred_c = mul_model.predict(X_mul_sc_c)
     y_mul_true_c = le.transform(df_multi_c["Writer"])

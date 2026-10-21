@@ -1,7 +1,7 @@
-True,GPT-4o,Gemma-2-9B,Human,Llama-8B,Mistral-7B,Qwen-2-72B
-GPT-4o,4,813,0,7,162,13
-Gemma-2-9B,14,800,185,0,0,0
+True,gpt-4o-mini (GPT-4o slot),gemma-3-12b-it (Gemma-2-9B slot),Human,llama-3.1-8b (Llama-8B slot),mistral-nemo (Mistral-7B slot),qwen-2.5-72b (Qwen-2-72B slot)
+gpt-4o-mini (GPT-4o slot),4,813,0,7,162,13
+gemma-3-12b-it (Gemma-2-9B slot),14,800,185,0,0,0
 Human,0,99,681,74,5,140
-Llama-8B,0,178,4,199,191,374
-Mistral-7B,4,725,21,102,61,86
-Qwen-2-72B,13,412,1,197,324,50
+llama-3.1-8b (Llama-8B slot),0,178,4,199,191,374
+mistral-nemo (Mistral-7B slot),4,725,21,102,61,86
+qwen-2.5-72b (Qwen-2-72B slot),13,412,1,197,324,50

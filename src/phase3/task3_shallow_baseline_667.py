@@ -1,4 +1,4 @@
-"""Reproducible shallow surface baseline on the 667-row held-out test set.
+"""Reproducible shallow surface baseline on the 666-row deduplicated test set.
 
 Inputs
 ------
@@ -12,7 +12,7 @@ results/phase3/T3_surface_artifacts_comparison.csv
     paired t-test p-values for All / Human / AI subsets.
 results/phase3/T3_shallow_classifier_667_metrics.csv
     Random-forest shallow baselines (formatting-only and extended surface
-    features) under (a) the natural 612 AI / 55 Human imbalance and (b) a
+    features) under (a) the natural 611 AI / 55 Human imbalance and (b) a
     balanced 55 AI / 55 Human diagnostic sample.
 
 The classifier is deliberately non-neural and is not a replacement for the
@@ -171,8 +171,8 @@ def main() -> None:
 
     y = df["is_AI"].astype(int)
     rows = [
-        evaluate(post[formatting], y, "Formatting-only | natural 667 (612 AI / 55 Human)"),
-        evaluate(post[extended], y, "Extended surface | natural 667 (612 AI / 55 Human)"),
+        evaluate(post[formatting], y, "Formatting-only | natural 666 (611 AI / 55 Human)"),
+        evaluate(post[extended], y, "Extended surface | natural 666 (611 AI / 55 Human)"),
     ]
     human = df[df["is_AI"] == 0]
     ai_sample = df[df["is_AI"] == 1].sample(n=len(human), random_state=RANDOM_STATE)

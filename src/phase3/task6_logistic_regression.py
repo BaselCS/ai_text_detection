@@ -150,11 +150,23 @@ def load_models():
 
 
 def predict_rows(df, features, bin_model, bin_scaler, mul_model, mul_scaler, mul_le):
-    X_bin = df.reindex(columns=features, fill_value=0).astype("float32")
+    """Score rows from the feature matrix.
+
+    A missing feature column raises instead of being zero-filled: zero-filling
+    before StandardScaler maps the absent column to (0 - mean) / scale for
+    every row of that writer, which is a systematic offset, not a neutral value.
+    """
+    missing = [f for f in features if f not in df.columns]
+    if missing:
+        raise ValueError(
+            f"Feature matrix is incomplete: {len(missing)} missing column(s) "
+            f"{missing}. Regenerate the processed file; do not zero-fill."
+        )
+    X_bin = df[features].astype("float32")
     X_bin_sc = pd.DataFrame(bin_scaler.transform(X_bin).astype("float32"), columns=features)
     bin_pred = bin_model.predict(X_bin_sc)
 
-    X_mul = df.reindex(columns=features, fill_value=0).astype("float32")
+    X_mul = df[features].astype("float32")
     X_mul_sc = pd.DataFrame(mul_scaler.transform(X_mul).astype("float32"), columns=features)
     mul_pred_idx = mul_model.predict(X_mul_sc)
     mul_pred = mul_le.inverse_transform(mul_pred_idx)
@@ -406,6 +418,8 @@ def fit_within_class(cache: pd.DataFrame) -> pd.DataFrame:
         row = fit_model(data, "binary_correct", extra="", label=label)
         row["Regime"] = regime
         row["Specification"] = "AI-only" if "AI-only" in label else "Human-only"
+        row["Accuracy"] = round(float(data["binary_correct"].mean()), 4)
+        row["N_Correct"] = int(data["binary_correct"].sum())
         row["Reported"] = bool(row["Converged"])
         row["Note"] = (
             "Quasi-separated; point estimate not reported"
@@ -450,21 +464,47 @@ def fit_per_paraphraser_slopes(cache: pd.DataFrame) -> pd.DataFrame:
                 "N_Observations": int((data.paraphraser == p).sum()),
                 "Converged": converged,
             })
-        # Joint Wald test that all interaction terms are zero (equal slopes).
-        inter_terms = [k for k in model.params.index if k.startswith("bertscore:")]
-        R = np.zeros((len(inter_terms), len(model.params)))
-        for i, term in enumerate(inter_terms):
-            R[i, list(model.params.index).index(term)] = 1
-        wald = model.wald_test(R, scalar=True)
+        # Joint Wald tests that all interaction terms are zero (equal slopes).
+        def _wald_info(fit_model):
+            terms = [k for k in fit_model.params.index if k.startswith("bertscore:")]
+            R = np.zeros((len(terms), len(fit_model.params)))
+            for i, term in enumerate(terms):
+                R[i, list(fit_model.params.index).index(term)] = 1
+            w = fit_model.wald_test(R, scalar=True)
+            return float(w.pvalue), float(w.statistic), len(terms)
+
+        p_all, stat_all, df_all = _wald_info(model)
         rows.append({
             "Outcome": target,
             "Paraphraser": "__joint_wald_equal_slopes__",
             "BERTScore_Beta": np.nan,
             "Clustered_SE": np.nan,
             "z_statistic": np.nan,
-            "p_value": float(wald.pvalue),
+            "p_value": p_all,
+            "Wald_Statistic": stat_all,
+            "Wald_df": df_all,
             "N_Observations": int(len(data)),
             "Converged": converged,
+        })
+
+        # Primary test: the five paraphrasers that share the same article pool.
+        # Gemma-27B is a reconstructed cross-sample and is excluded here; it is
+        # retained only in the extended-pool row above.
+        d5 = data[data["is_gemma27b"] == 0]
+        formula5 = f"{target} ~ bertscore * C(paraphraser, Treatment(reference='GPT-4o-mini'))"
+        m5, conv5 = _fit(formula5, d5)
+        p5, stat5, df5 = _wald_info(m5)
+        rows.append({
+            "Outcome": target,
+            "Paraphraser": "__joint_wald_equal_slopes_restricted5__",
+            "BERTScore_Beta": np.nan,
+            "Clustered_SE": np.nan,
+            "z_statistic": np.nan,
+            "p_value": p5,
+            "Wald_Statistic": stat5,
+            "Wald_df": df5,
+            "N_Observations": int(len(d5)),
+            "Converged": conv5,
         })
     out = pd.DataFrame(rows)
     out.to_csv(SLOPES_CSV, index=False)

@@ -1,8 +1,8 @@
-True,GPT-4o,Gemma-2-9B,Human,Llama-8B,Mistral-7B,Qwen-2-72B,deepseek-v4-pro
-GPT-4o,2,804,1,6,108,4,74
-Gemma-2-9B,22,810,162,0,0,1,4
+True,gpt-4o-mini (GPT-4o slot),gemma-3-12b-it (Gemma-2-9B slot),Human,llama-3.1-8b (Llama-8B slot),mistral-nemo (Mistral-7B slot),qwen-2.5-72b (Qwen-2-72B slot),deepseek-v4-pro (Yi-Large slot)
+gpt-4o-mini (GPT-4o slot),2,804,1,6,108,4,74
+gemma-3-12b-it (Gemma-2-9B slot),22,810,162,0,0,1,4
 Human,0,87,701,62,4,108,37
-Llama-8B,1,178,4,192,154,373,44
-Mistral-7B,3,726,20,108,53,80,9
-Qwen-2-72B,11,424,1,170,222,44,125
-deepseek-v4-pro,1,537,441,4,0,8,5
+llama-3.1-8b (Llama-8B slot),1,178,4,192,154,373,44
+mistral-nemo (Mistral-7B slot),3,726,20,108,53,80,9
+qwen-2.5-72b (Qwen-2-72B slot),11,424,1,170,222,44,125
+deepseek-v4-pro (Yi-Large slot),1,537,441,4,0,8,5

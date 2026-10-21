@@ -1,7 +1,12 @@
 {
-  "n_test_rows": 667,
-  "n_train_rows": 51181,
+  "n_test_rows": 666,
+  "n_corpus_rows": 51181,
   "n_exact_string_matches": 0,
+  "n_source_text_overlap_train": 0,
+  "n_source_text_overlap_val": 0,
+  "n_index_overlap_train": 0,
+  "n_index_overlap_val": 0,
+  "source_text_overlap_definition": "test original_text (pre-NLLB source article) appears in the Seed-42 train/validation split Text",
   "tfidf_config": {
     "stop_words": "english",
     "ngram_range": [
@@ -13,10 +18,10 @@
     "fit": "combined train + test corpus"
   },
   "nearest_neighbour_cosine": {
-    "mean": 0.6948,
-    "median": 0.7165,
+    "mean": 0.6953,
+    "median": 0.7166,
     "max": 0.9797,
-    "min": 0.1373,
+    "min": 0.1377,
     "n_at_or_above_0_99": 0,
     "n_at_or_above_0_95": 1
   }

@@ -129,9 +129,16 @@ def main():
 
     clean = proc[~drop_mask].copy()
 
+    def _feat(df, label):
+        missing = [f for f in features if f not in df.columns]
+        if missing:
+            raise ValueError(f"{label}: {len(missing)} missing feature column(s) {missing[:8]}. "
+                             "Regenerate the processed file; do not zero-fill.")
+        return df[features].astype("float32")
+
     def binary_metrics(df):
         X = pd.DataFrame(
-            bin_scaler.transform(df.reindex(columns=features, fill_value=0).astype("float32")),
+            bin_scaler.transform(_feat(df, "hygiene/binary")),
             columns=features,
         )
         pred = bin_model.predict(X)
@@ -145,7 +152,7 @@ def main():
     def multi_metrics(df):
         valid = df[df["Writer"].isin(mul_le.classes_)].copy()
         X = pd.DataFrame(
-            mul_scaler.transform(valid.reindex(columns=features, fill_value=0).astype("float32")),
+            mul_scaler.transform(_feat(valid, "hygiene/multi")),
             columns=features,
         )
         pred = mul_model.predict(X)
@@ -178,7 +185,7 @@ def main():
                     "Clean_N": clean_n,
                     "Raw_Value": round(raw_f1, 4),
                     "Clean_Value": round(clean_f1, 4),
-                    "Delta": round(clean_f1 - raw_f1, 4),
+                    "Delta": round(round(clean_f1, 4) - round(raw_f1, 4), 4),
                 },
             ]
         )

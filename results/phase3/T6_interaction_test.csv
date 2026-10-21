@@ -1,7 +1,7 @@
 Outcome,Specification,N_Observations,N_Clusters,Interaction_Beta,Clustered_SE,z_statistic,p_value,Converged,Reference_Slope
-multi_correct,Pooled interaction (no paraphraser controls),12549,3782,-29.8417,2.3445,-12.73,4.118854908205947e-37,True,17.2684
-multi_correct,Paraphraser controls (Gemma-27B vs GPT-4o-mini reference),12549,3782,-26.2334,2.4106,-10.88,1.3971720464108136e-27,True,13.6601
-multi_correct,Paraphraser controls + writer FE,12549,3782,-36.0332,2.402,-15.0,7.222462141886323e-51,True,30.2111
-binary_correct,Pooled interaction (no paraphraser controls),12549,3782,-16.8744,2.5592,-6.59,4.294437140079094e-11,True,38.1928
-binary_correct,Paraphraser controls (Gemma-27B vs GPT-4o-mini reference),12549,3782,-23.5755,2.819,-8.36,6.107568048840839e-17,True,44.8939
-binary_correct,Paraphraser controls + writer FE,12549,3782,-25.7111,2.7828,-9.24,2.4846215904430354e-20,True,21.6226
+multi_correct,Pooled interaction (no paraphraser controls),12549,3782,-27.2668,2.3443,-11.63,2.855995360086761e-31,True,14.6935
+multi_correct,Paraphraser controls (Gemma-27B vs GPT-4o-mini reference),12549,3782,-22.2764,2.392,-9.31,1.2441281478068351e-20,True,9.7031
+multi_correct,Paraphraser controls + writer FE,12549,3782,-33.4317,2.5297,-13.22,7.1027858698431395e-40,True,34.7003
+binary_correct,Pooled interaction (no paraphraser controls),12549,3782,-16.4116,2.6544,-6.18,6.29407762715652e-10,True,37.73
+binary_correct,Paraphraser controls (Gemma-27B vs GPT-4o-mini reference),12549,3782,-17.2954,2.7215,-6.36,2.0832481621454635e-10,True,38.6138
+binary_correct,Paraphraser controls + writer FE,12549,3782,-19.6159,2.7058,-7.25,4.185110687804898e-13,True,21.2838

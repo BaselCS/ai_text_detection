@@ -10,6 +10,17 @@ import joblib
 
 with open("results/models/Bin_BERT_features.json") as f:
     features = json.load(f)
+
+def _assert_schema(df, features, name):
+    """Fail loudly on missing features instead of zero-filling them."""
+    missing = [f for f in features if f not in df.columns]
+    if missing:
+        raise ValueError(
+            f"{name}: missing {len(missing)} feature(s) {missing}. "
+            "Regenerate the processed file; do not zero-fill."
+        )
+    return df[features]
+
 scaler = joblib.load("results/models/Multi_BERT_scaler.joblib")
 
 print("Loading training corpus...", flush=True)
@@ -32,8 +43,7 @@ ALT = {"Gemma-27B": "Gemma-2-9B", "Gemma-2-9B": "Gemma-2-9B", "Qwen-2": "Qwen-2-
 rows_e, rows_c = [], []
 for sname, csv in SETS.items():
     df = pd.read_csv(csv, low_memory=True)
-    df = df.reindex(columns=features, fill_value=0)
-    c = scaler.transform(df.astype("float32")).astype(np.float64).mean(axis=0)
+    c = scaler.transform(_assert_schema(df, features, csv).astype("float32")).astype(np.float64).mean(axis=0)
     n = np.linalg.norm(c)
     erow, crow = {"Paraphrased_set": sname}, {"Paraphrased_set": sname}
     for w, tc in train_c.items():

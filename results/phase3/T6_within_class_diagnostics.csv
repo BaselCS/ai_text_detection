@@ -1,5 +1,5 @@
-Model,Dependent_Variable,N_Observations,N_Clusters,Converged,Pseudo_R2,BERTScore_Beta,Clustered_SE,z_statistic,p_value,Odds_Ratio_per_0.1,Beta_CI_Lower,Beta_CI_Upper,OR_CI_Lower,OR_CI_Upper,Regime,Specification,Reported,Note
-AI-only | Extended-Pool,binary_correct,10754,3203,False,0.1785,23.0645,4.1023,5.62,1.8844313025814716e-08,10.04,15.0241,31.105,4.49,22.43,Extended-Pool Sensitivity,AI-only,False,Quasi-separated; point estimate not reported
-Human-only | Extended-Pool,binary_correct,1795,579,True,0.225,11.3245,1.7892,6.33,2.4620241545454473e-10,3.1,7.8177,14.8313,2.19,4.41,Extended-Pool Sensitivity,Human-only,True,
-AI-only | Restricted,binary_correct,8983,1797,False,0.2144,27.7568,6.088,4.56,5.1332956476810895e-06,16.05,15.8246,39.6891,4.87,52.93,Restricted,AI-only,False,Quasi-separated; point estimate not reported
-Human-only | Restricted,binary_correct,1499,299,True,0.2426,12.4944,1.994,6.27,3.7036103769671675e-10,3.49,8.5863,16.4026,2.36,5.16,Restricted,Human-only,True,
+Model,Dependent_Variable,N_Observations,N_Clusters,Converged,Pseudo_R2,BERTScore_Beta,Clustered_SE,z_statistic,p_value,Odds_Ratio_per_0.1,Beta_CI_Lower,Beta_CI_Upper,OR_CI_Lower,OR_CI_Upper,Regime,Specification,Accuracy,N_Correct,Reported,Note
+AI-only | Extended-Pool,binary_correct,10754,3203,True,0.1445,22.8233,4.0837,5.59,2.2846804997678008e-08,9.8,14.8195,30.8271,4.4,21.82,Extended-Pool Sensitivity,AI-only,0.962,10347,True,
+Human-only | Extended-Pool,binary_correct,1795,579,True,0.1613,12.1157,1.7585,6.89,5.584915074838695e-12,3.36,8.6691,15.5622,2.38,4.74,Extended-Pool Sensitivity,Human-only,0.5616,1008,True,
+AI-only | Restricted,binary_correct,8983,1797,True,0.1658,27.0501,5.9139,4.57,4.785043938869377e-06,14.95,15.4591,38.6411,4.69,47.66,Restricted,AI-only,0.9715,8727,True,
+Human-only | Restricted,binary_correct,1499,299,True,0.1847,13.2395,1.9528,6.78,1.2043124389622218e-11,3.76,9.4121,17.067,2.56,5.51,Restricted,Human-only,0.5397,809,True,

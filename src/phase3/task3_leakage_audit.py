@@ -4,12 +4,13 @@ The historical audit used ``dict`` insertion order that silently kept the *last*
 occurrence of duplicated article texts.  This script freezes the audit rule to
 the *first* occurrence in ``processed_articles.csv`` and regenerates the leakage
 summary and detailed match table from that single rule.  The separate 3,064-row
-NLLB evaluation archive uses an explicit last-occurrence rule to reproduce the
-documented 667/580/610/615/588 sample sizes.
+NLLB evaluation archive uses an explicit last-occurrence rule; its pre-dedup
+sizes are 667/580/610/615/588 and its source-text-deduplicated evaluation sizes
+are 666/579/610/615/586.
 
 The 1,729-row file audited here is the historical pre-subsampling evaluation
 file ``data/processed/processed_translation.csv``.  It is *not* the remediated
-667-row NLLB test set; the report must keep those provenance statements
+666-row NLLB test set; the report must keep those provenance statements
 separate.
 """
 
@@ -35,8 +36,9 @@ def build_first_occurrence_map(texts: pd.Series) -> dict:
     documented Seed-42 counts (1,205 train + 152 validation + 372 test).  The
     separate 3,064-row NLLB evaluation archive uses the last-occurrence rule in
     ``task3_remediation.py``/``task3_dual_settings.py`` to reproduce the
-    documented 667/580/610/615/588 sample sizes.  Both rules are explicit and
-    deterministic; neither relies on an accidental dict comprehension.
+    pre-dedup 667/580/610/615/588 sizes (666/579/610/615/586 after source-text
+    deduplication).  Both rules are explicit and deterministic; neither relies
+    on an accidental dict comprehension.
     """
     mapping = {}
     for idx, text in enumerate(texts):
