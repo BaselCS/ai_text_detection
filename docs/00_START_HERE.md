@@ -11,7 +11,9 @@ Read these in number order. Everything else is code or results.
 | 05 | `05_fixes_log.md` | Two post-hoc fixes: Gemma-27B perturbation row (TF-IDF rematch) + RoBERTa-Multi misspell rows (4-seed, seed-42 model deleted). Read before citing T19/T25. |
 | 06 | `06_cnn_provenance.md` | Item 2 detail: CNN/DailyMail (not BBC) source, prompts, endpoints, quality flags. |
 | 07 | `07_task3_roberta_report.md` | RoBERTa baseline full report (seed 42). Copy of `results/extra/task3/Task3_Results_Report.md` (that copy stays with its figures). |
-| 08 | `08_explanation_ar.md` | Arabic walkthrough of all 10 tasks (same content as 04, in Arabic). |
+| 09 | `09_third_phase_experiments.md` | Phase-3 supervisor spec + per-task resolutions (English/Arabic record). |
+| 11 | `11_phase3_final_supervisor_report.md` | Final Phase-3 supervisor report: corrected numbers, caveats, artifacts. |
+| 12 | `12_phase3_complete_arabic_retrospective.md` | **Single Arabic retrospective of Phase 2 (10 tasks) + Phase 3 (6 tasks).** |
 
 ## Status at a glance (all 10 done)
 

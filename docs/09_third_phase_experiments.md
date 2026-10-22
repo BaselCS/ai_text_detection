@@ -1,5 +1,7 @@
 # 09 — Third Phase of Experiments (Supervisor Spec)
 
+> **ملاحظة:** الشرح العربي الموحّد للمرحلتين موجود في `docs/12_phase3_complete_arabic_retrospective.md`. الملخصات العربية في هذا الملف محفوظة كسجل أصلي لمتطلبات المشرف وقرارات المعالجة، وليست ملف شرح مستقل.
+
 ## Supervisor Comment on Second Phase Results
 
 > "The results are excellent, and they settle the central question of the paper. Three perturbations on the same corpus produce three different attractors: misspelling sends predictions to Human, paraphrasing sends them to Gemma-2-9B, and translation leaves the distribution balanced. Together with item 6 of the second phase (the leave-class-out retrain), this shows that the collapse is driven by the shift itself rather than by the paraphraser imprinting its own style.

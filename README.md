@@ -13,7 +13,7 @@ All project notes live in `docs/` in reading order — see `docs/00_START_HERE.m
 - `05_fixes_log.md` — post-hoc fixes (read before citing T19/T25)
 - `06_cnn_provenance.md` — second-corpus (CNN/DailyMail) provenance
 - `07_task3_roberta_report.md` — RoBERTa baseline report
-- `08_explanation_ar.md` — Arabic walkthrough
+- `12_phase3_complete_arabic_retrospective.md` — single Arabic retrospective of Phase 2 (10 tasks) and Phase 3 (6 tasks)
 
 ## Project Structure
 
