@@ -1,0 +1,2 @@
+Paraphraser,N,BERTScore_F1_mean,BERTScore_F1_std,sentBLEU_mean,sentBLEU_std
+Gemma-27B,2094,0.8879,0.0247,10.72,6.44

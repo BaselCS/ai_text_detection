@@ -39,3 +39,6 @@ nltk_data/
 offload_folder/
 .agents/*
 agents/
+
+# Raw datasets (local only, not committed)
+data/

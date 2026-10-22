@@ -45,7 +45,7 @@
 | المهمة | ما نُفِّذ | النتيجة الأساسية | المخرج الرئيسي |
 |---|---|---|---|
 | 1. الحقيقة الأرضية البديلة | تشغيل `Multi_BERT` ومقارنة الوسم الأصلي بالوسم البديل باسم المُعادِ الصياغة | `Gemma-27B`: **81.47%**، `Gemma-2-9B`: **77.03%**؛ أما Qwen وMistral وLLaMA وGPT-4o-mini فبين **3.48%** و**7.10%** فقط | `T16_Alternative_GT.csv` |
-| 2. مصدر المجموعة الثانية | توثيق CNN/DailyMail: `abisee/cnn_dailymail` 3.0.0، 1,000 مقال، درجة حرارة 0.7، وسبعة مولّدات (بينها `claude-3-haiku` للكشف الثنائي فقط) | الكشف الثنائي **84.66% / 70.14%** (خام)، والإسناد **26.56% / 19.92%** (خام) | `T14_Second_Corpus_Validation.csv`, `docs/06` |
+| 2. مصدر المجموعة الثانية | توثيق CNN/DailyMail: `abisee/cnn_dailymail` 3.0.0، 1,000 مقال، درجة حرارة 0.7، وسبعة مولّدات (بينها `claude-3-haiku` للكشف الثنائي فقط) | الكشف الثنائي **84.66% / 70.14%** (خام)، والإسناد **26.56% / 19.92%** (خام) | `T14_Second_Corpus_CNN_Validation.csv`, `docs/06` |
 | 3. مصفوفة RoBERTa تحت هجوم Gemma | إعادة استدلال `RoBERTa_Multi` على 2,072 مستنداً | الدقة **16.84%** وMacro-F1 **9.80%**؛ **75.5%** من التنبؤات إلى `Gemma-2-9B`؛ 17.9 مللي ثانية/مستند | `T17_RoBERTa_Gemma_*` |
 | 4. مقدار التشويه | BERTScore-F1 وsentence-BLEU لكل مُعادٍ | `Gemma-27B`: BLEU **10.72**؛ `Gemma-2-9B`: **10.86**؛ `Qwen-2`: **51.53** (الأكثر حفظاً للنص) | `T19_Perturbation_Magnitude.csv` |
 | 5. توزيع التنبؤات | أخطاء إملائية 5% و20%، وترجمة NLLB | عند 20%: **90.9%** من التنبؤات إلى `Human`؛ الترجمة متوازنة (~14% لكل فئة) بلا جاذب أحادي | `T20_PredDist_*.csv` |
@@ -806,7 +806,7 @@ $$\text{BSS} = 1 - \frac{0.8980}{0.8333} = -0.0776$$
 
 | الملف | المحتوى |
 |---|---|
-| `results/tables/T14_Second_Corpus_Validation.csv` | نتائج CNN/DailyMail الخام: ثنائي ومتعدد الفئات |
+| `results/tables/T14_Second_Corpus_CNN_Validation.csv` | نتائج CNN/DailyMail الخام: ثنائي ومتعدد الفئات |
 | `T16_Alternative_GT.csv`, `T16_Alternative_GT_AIonly.csv` | مقارنة الحقيقة الأصلية بالبديلة لكل مُعادٍ |
 | `T17_RoBERTa_Gemma_*` | مصفوفة RoBERTa على Gemma-27B: أعداد، نسب، تنبؤات، وملخص |
 | `T19_Perturbation_Magnitude.csv` | BERTScore وBLEU لكل مُعادٍ (ستة صفوف) |

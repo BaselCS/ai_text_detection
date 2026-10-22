@@ -1,0 +1,7 @@
+Dataset,N_scorable,Acc,MacroF1,Pred_dist
+Gemma-27B,1776,0.3468,0.2893,"{'Human': 579, 'GPT-4o': 529, 'Yi-Large': 317, 'Mistral-7B': 254, 'Qwen-2-72B': 72, 'Llama-8B': 25}"
+"Gemma-27B (Gemma-origin, unscorable)",296,,,"{'Human': 93, 'GPT-4o': 92, 'Yi-Large': 43, 'Mistral-7B': 41, 'Qwen-2-72B': 24, 'Llama-8B': 3}"
+Mistral-7B,1800,0.4983,0.4658,"{'GPT-4o': 637, 'Mistral-7B': 515, 'Yi-Large': 266, 'Human': 189, 'Llama-8B': 122, 'Qwen-2-72B': 71}"
+"Mistral-7B (Gemma-origin, unscorable)",300,,,"{'GPT-4o': 159, 'Mistral-7B': 94, 'Yi-Large': 21, 'Llama-8B': 13, 'Human': 10, 'Qwen-2-72B': 3}"
+CNN_DailyMail,5999,0.243,0.2263,"{'Human': 1467, 'Mistral-7B': 1352, 'Llama-8B': 1098, 'Qwen-2-72B': 974, 'Yi-Large': 835, 'GPT-4o': 273}"
+"CNN_DailyMail (Gemma-origin, unscorable)",1000,,,"{'GPT-4o': 397, 'Human': 387, 'Llama-8B': 73, 'Yi-Large': 61, 'Mistral-7B': 57, 'Qwen-2-72B': 25}"

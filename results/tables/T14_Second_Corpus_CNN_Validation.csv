@@ -1,0 +1,2 @@
+Dataset,Binary_Accuracy,Binary_Macro_Precision,Binary_Macro_Recall,Binary_Macro_F1,Multi_Accuracy,Multi_Macro_Precision,Multi_Macro_Recall,Multi_Macro_F1
+Second_Corpus_CNN,0.8466,0.6794,0.7396,0.7014,0.2656,0.1995,0.2656,0.1992

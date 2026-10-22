@@ -1,0 +1,7 @@
+Paraphrased_set,GPT-4o,Gemma-2-9B,Human,Llama-8B,Mistral-7B,Qwen-2-72B,Yi-Large,nearest_Euclidean
+Gemma-27B,15.408,9.713,18.967,11.147,10.276,11.075,9.125,Yi-Large
+Gemma-2-9B,14.471,9.133,18.596,10.575,10.041,11.092,8.661,Yi-Large
+Qwen-2,9.955,4.257,16.856,5.676,6.24,7.761,4.457,Gemma-2-9B
+Mistral-7B,9.571,3.59,18.031,7.74,7.958,10.09,5.937,Gemma-2-9B
+LLaMA-3,15.293,7.75,20.924,9.304,4.897,6.073,5.884,Mistral-7B
+GPT-4o-mini,10.164,4.772,17.499,6.957,6.683,8.569,4.671,Yi-Large

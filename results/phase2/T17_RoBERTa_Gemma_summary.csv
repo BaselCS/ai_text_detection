@@ -1,0 +1,2 @@
+Dataset,N,Accuracy,MacroF1,Latency_ms
+Paraphrased_Gemma-27B,2072,0.1684,0.098,17.9

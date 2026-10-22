@@ -1,0 +1,8 @@
+,pred_GPT-4o,pred_Gemma-2-9B,pred_Human,pred_Llama-8B,pred_Mistral-7B,pred_Qwen-2-72B,pred_Yi-Large
+true_GPT-4o,662,0,803,0,0,0,0
+true_Gemma-2-9B,102,41,1318,0,0,1,0
+true_Human,0,0,1461,0,0,0,0
+true_Llama-8B,7,2,1452,2,0,0,0
+true_Mistral-7B,4,5,1454,0,0,0,0
+true_Qwen-2-72B,4,0,1457,0,0,2,0
+true_Yi-Large,93,0,1369,0,0,0,3

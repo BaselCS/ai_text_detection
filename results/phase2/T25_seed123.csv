@@ -1,0 +1,9 @@
+count,accuracy,macro_f1,weighted_f1,latency_ms_per_sample,Model,Dataset
+10237,0.996,0.9917,0.996,33.63,RoBERTa_Binary,Clean_Test
+10242,0.9889,0.9765,0.9887,33.33,RoBERTa_Binary,Misspell_5%
+10242,0.9916,0.9824,0.9915,35.49,RoBERTa_Binary,Misspell_20%
+2072,0.8581,0.4685,0.7935,17.08,RoBERTa_Binary,Paraphrased_Gemma
+1729,0.9994,0.9988,0.9994,29.14,RoBERTa_Binary,Translation_NLLB
+10237,0.9558,0.9561,0.9561,32.81,RoBERTa_Multi,Clean_Test
+2072,0.1926,0.1478,0.1478,16.83,RoBERTa_Multi,Paraphrased_Gemma
+1729,0.9653,0.9653,0.9653,28.92,RoBERTa_Multi,Translation_NLLB
